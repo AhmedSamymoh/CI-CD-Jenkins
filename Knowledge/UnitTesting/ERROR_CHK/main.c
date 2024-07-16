@@ -1,3 +1,54 @@
+#include <stdio.h>
+#include <assert.h>
+
+#define  VMD_LV_MODE 				0
+#define AEVM_EVENT_REPORT_ST_INIT   0
+#define VMD_BVMD_ERROR_STATUS_PASS  0
+#define CC_VMD_INTERRUPT_VARIANT    0
+#define AEVM_EVENT_REPORT_ST_FAIL    0
+
+#define VMD_ENABLE                  1
+#define VMD_VARI_POLLING_MODE       1
+
+#define VMD_DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS        1024
+#define VMD_DCVM_CFG_MAX_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS  800
+#define VMD_DCVM_CFG_MIN_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS  300
+#define VMD_DCVM_CFG_MIN_VOLTAGE_THRESHOLD_SCALED_VOLTS        200
+
+typedef unsigned char       uint8_t;
+typedef unsigned short      uint16_t;
+typedef unsigned int        uint32_t;
+typedef unsigned long long  uint64_t;
+
+uint16_t VMD_DcVoltage = 0;
+
+/******************************************************/
+
+void VMD_SlowCycle(void);
+void AEVM_EventReport();
+void test_cases();
+
+uint8_t counter = 0;
+
+void AEVM_EventReport(){
+    counter++;
+}
+
+void test_cases() {
+    uint16_t test_values[] = {1024, 1000, 800, 799, 810, 299, 310, 200, 210};
+    uint8_t expected_counter[] = {5, 6, 5, 6, 6, 5, 6, 5, 6};
+
+    for (int i = 0; i < sizeof(test_values)/sizeof(test_values[0]); i++) {
+        counter = 0;
+         // ---> TCs : 1024 - 1000 - 800 - 799 - 810 - 299 - 310 - 200 - 210 use assert
+        VMD_DcVoltage = test_values[i];
+
+        VMD_SlowCycle();
+
+        assert(counter == expected_counter[i]);
+        printf("Test Case %d Passed\n", i+1);   
+    }
+}
 void VMD_SlowCycle(void)
 {
     /*Declaration for last reported status variables for over/under voltage thresholds */
@@ -11,12 +62,15 @@ void VMD_SlowCycle(void)
     static uint8_t cov_status = VMD_BVMD_ERROR_STATUS_PASS;
     /*local variable for the status of the critical under voltage */
     static uint8_t cuv_status = VMD_BVMD_ERROR_STATUS_PASS;
+
+
 #if VMD_LV_MODE == VMD_ENABLE
     /*local variable for the status of the over logic supply voltage */
     static uint16_t AEVM_EventReportSt_logic_supply_OV_STATUS = VMD_BVMD_ERROR_STATUS_PASS;
     /*local variable for the status of the under logic supply voltage */
     static uint16_t AEVM_EventReportSt_logic_supply_UV_STATUS_  = VMD_BVMD_ERROR_STATUS_PASS;
 #endif
+
     /*Define exit loop condition local variable*/
 #if CC_VMD_INTERRUPT_VARIANT == VMD_VARI_POLLING_MODE
     uint8_t  breakloop_counter = VMD_DCVM_CFG_MAX_BREAK_LOOP_COUNTER;
@@ -24,12 +78,17 @@ void VMD_SlowCycle(void)
     VMD_DcVoltage_adc_data = ADC_HAL_CHANNEL_READING_GET(VMD_DC_VOLTAGE_CFG_ADC_CH);
     ADC_HAL_CHANNEL_STATE_RESET(VMD_DC_VOLTAGE_CFG_ADC_CH);
 #endif /*End of #if CC_DCVM_INTERRUPT_VARIANT == DCVM_VARI_POLLING_MODE*/
-    /* Get DC Voltage in volts scaled up by 1024 */
-    VMD_DcVoltage = VMD_DCVM_AdcToScaledDCVoltageConvert(VMD_DcVoltage_adc_data);
+
+     /* Get DC Voltage in volts scaled up by 1024 */
+	/********************* STUB *********************/
+    //VMD_DcVoltage = VMD_DCVM_AdcToScaledDCVoltageConvert(VMD_DcVoltage_adc_data); 
+    /************************************************/
+
     #if VMD_LV_MODE == VMD_ENABLE
     vmd_logicVoltage = vmd_bvmd_logic_supply_AdcToScaledVbatVoltsConvert(vmd_avg_adc_logicVoltage_readings);
     uint32_t BVMD_logic_supply_voltage_mV=(uint32_t)(((uint64_t)vmd_logicVoltage * VMD_CFG_RESOLUTION_BITS *VMD_BVMD_MILLI_VOLT_CONVERSION_RATIO)>> VMD_CFG_RESOLUTION_BITS) ;  //FIRST DIVIDE BY 100 then multiply with 100 to take only one digit after point
     #endif
+
     /*OverVoltage Error Handling*/
     if(VMD_DcVoltage >= VMD_DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS)
     {
@@ -37,7 +96,10 @@ void VMD_SlowCycle(void)
         last_status_reported_ov = AEVM_EVENT_REPORT_ST_FAIL;
         
         /*Report to AEVM status FAIL for DC Over voltage error */
-        AEVM_EventReport(DCVM_ERROR_MEASURED_DC_OVER_VOLTAGE, AEVM_EVENT_REPORT_ST_FAIL);
+
+        /********************* STUB *********************/
+        AEVM_EventReport();
+        
     }                                   /*End of if(DCVM_voltage >= DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS) */
    
     else if ((VMD_DcVoltage < VMD_DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS) && (VMD_DcVoltage > VMD_DCVM_CFG_MAX_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS))
@@ -45,21 +107,27 @@ void VMD_SlowCycle(void)
         if (last_status_reported_ov == AEVM_EVENT_REPORT_ST_FAIL)
         {
             /*Report to AEVM status FAIL for DC Over voltage error */
-            AEVM_EventReport(DCVM_ERROR_MEASURED_DC_OVER_VOLTAGE, AEVM_EVENT_REPORT_ST_FAIL);
+            // AEVM_EventReport(DCVM_ERROR_MEASURED_DC_OVER_VOLTAGE, AEVM_EVENT_REPORT_ST_FAIL);
+            /********************* STUB *********************/
+            AEVM_EventReport();
         }                                  /*End of if (last_status_reported_ov == AEVM_EVENT_REPORT_ST_FAIL) */
         else
         {
             /*Report to AEVM status PASS for DC Over voltage error */
-            AEVM_EventReport(DCVM_ERROR_MEASURED_DC_OVER_VOLTAGE, AEVM_EVENT_REPORT_ST_PASS);
+            //AEVM_EventReport(DCVM_ERROR_MEASURED_DC_OVER_VOLTAGE, AEVM_EVENT_REPORT_ST_PASS);
+            /********************* STUB *********************/
+            AEVM_EventReport();
+            
         }/*End of else of if (last_status_reported_ov == AEVM_EVENT_REPORT_ST_FAIL)*/
     }/*End of Else-if*/
     
     else/*if (DCVM_voltage <= DCVM_CFG_MAX_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS)*/
     {
         /*Report to AEVM status PASS for DC Over voltage error */
-        AEVM_EventReport(DCVM_ERROR_MEASURED_DC_OVER_VOLTAGE, AEVM_EVENT_REPORT_ST_PASS);
-    
-        last_status_reported_ov = AEVM_EVENT_REPORT_ST_PASS;
+        // AEVM_EventReport(DCVM_ERROR_MEASURED_DC_OVER_VOLTAGE, AEVM_EVENT_REPORT_ST_PASS);
+        /********************* STUB *********************/
+        AEVM_EventReport();
+        //last_status_reported_ov = AEVM_EVENT_REPORT_ST_PASS;
      
     }/*End of else of if(DCVM_voltage >= DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS)*/
     /*UnderVoltage Error Handling*/
@@ -69,7 +137,9 @@ void VMD_SlowCycle(void)
         last_status_reported_uv = AEVM_EVENT_REPORT_ST_FAIL;
 
         /*Report to AEVM status FAIL for DC under voltage error */
-        AEVM_EventReport(DCVM_ERROR_MEASURED_DC_UNDER_VOLTAGE, AEVM_EVENT_REPORT_ST_FAIL);
+        //AEVM_EventReport(DCVM_ERROR_MEASURED_DC_UNDER_VOLTAGE, AEVM_EVENT_REPORT_ST_FAIL);
+        /********************* STUB *********************/
+        AEVM_EventReport();
     }
 
     else if ((VMD_DcVoltage > VMD_DCVM_CFG_MIN_VOLTAGE_THRESHOLD_SCALED_VOLTS) && (VMD_DcVoltage < VMD_DCVM_CFG_MIN_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS))
@@ -77,24 +147,32 @@ void VMD_SlowCycle(void)
         if (last_status_reported_uv == AEVM_EVENT_REPORT_ST_FAIL)
         {
             /*Report to AEVM status FAIL for DC under voltage error */
-            AEVM_EventReport(DCVM_ERROR_MEASURED_DC_UNDER_VOLTAGE, AEVM_EVENT_REPORT_ST_FAIL);
+            //AEVM_EventReport(DCVM_ERROR_MEASURED_DC_UNDER_VOLTAGE, AEVM_EVENT_REPORT_ST_FAIL);
+            /********************* STUB *********************/
+            AEVM_EventReport();
         }
         else
         {
             /*Report to AEVM status PASS for DC under voltage error */
-            AEVM_EventReport(DCVM_ERROR_MEASURED_DC_UNDER_VOLTAGE, AEVM_EVENT_REPORT_ST_PASS);
+            //AEVM_EventReport(DCVM_ERROR_MEASURED_DC_UNDER_VOLTAGE, AEVM_EVENT_REPORT_ST_PASS);
+            /********************* STUB *********************/
+            AEVM_EventReport();
         }
     }
 
     else /*if (DCVM_voltage >= DCVM_CFG_MIN_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS)*/
     {
         /*Report to AEVM status PASS for DC under voltage error */
-        AEVM_EventReport(DCVM_ERROR_MEASURED_DC_UNDER_VOLTAGE, AEVM_EVENT_REPORT_ST_PASS);
+        //AEVM_EventReport(DCVM_ERROR_MEASURED_DC_UNDER_VOLTAGE, AEVM_EVENT_REPORT_ST_PASS);
+        /********************* STUB *********************/
+        AEVM_EventReport();
      
-        last_status_reported_uv = AEVM_EVENT_REPORT_ST_PASS;
+        //last_status_reported_uv = AEVM_EVENT_REPORT_ST_PASS;
      
         /*update "under DC voltage detected" flag at COM signal with False to indicate No under Voltage error exists*/
     }
+
+    
     #if VMD_LV_MODE == VMD_ENABLE
     /* Check if measured logic supply voltage voltage is equal or higher than maximum logic supply voltage threshold*/
             if(BVMD_logic_supply_voltage_mV >= VMD_BVMD_CFG_RAW_LOGIC_SUPPLY_VOLTAGE_MAXIMUM_THRESHOLD)
@@ -139,101 +217,128 @@ void VMD_SlowCycle(void)
                 
             } /* End of if(BVMD_logic_supply_voltage_mV <= BVMD_CFG_RAW_LOGIC_SUPPLY_VOLTAGE_MINIMUM_THRESHOLD) */
     #endif
-    /* Check if measured battery voltage is equal or higher than maximum battery voltage threshold*/
-    if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_THRESHOLD_MV)
-    {
-        /*raise flag for that "the  over voltage error is occured"*/
-        ov_status=VMD_BVMD_ERROR_STATUS_FAIL;
-    }/*if(battery_voltage_mV >= BVMD_CFG_VOLTAGE_MAXIMUM_THRESHOLD_MV)*/
-    else
-    {
-        /*check if the Battery voltage is less than or equal the clear value of the over voltage error */
-        if(battery_voltage_mV <=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CLEAR_THRESHOLD_MV )
-        {
-            /*raise flag for that "the  over voltage error is recovered"*/
-            ov_status=VMD_BVMD_ERROR_STATUS_PASS;
-        }/*if((battery_voltage_mV <= BVMD_CFG_VOLTAGE_MAXIMUM_CLEAR_THRESHOLD_MV ))*/
-        else
-        {
-                   
-        }/*End of if  if((battery_voltage_mV < BVMD_CFG_VOLTAGE_MAXIMUM_CLEAR_THRESHOLD_MV )) */
-                   
-    } /* End of if(local_battery_voltage_scaled >= BVMD_CFG_VOLTAGE_MAXIMUM_THRESHOLD_MV) */
 
-    /*check if measured battery voltage equal or higher than critical max voltage */
-    if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_THRESHOLD_MV )
-    {
-        /*raise flag for that "the critical over voltage error is occured"*/
-        cov_status=VMD_BVMD_ERROR_STATUS_FAIL;
-    }/*end of if (battery_voltage_mV >= BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_THRESHOLD_MV )*/
-    else 
-    {
-        /*check if the measured value less than or equal the clear value of the critical over voltage error*/
-        if(battery_voltage_mV <=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_CLEAR_THRESHOLD_MV )
-        {
-            /*raise flag for that "the critical over voltage error is recovered"*/
-            cov_status=VMD_BVMD_ERROR_STATUS_PASS;
-        }/*end of if battery_voltage_mV <= BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_CLEAR_THRESHOLD_MV */
-        else
-        {   /*check if the last value before current one pass or fail */
+    /*************************************************************************************************/
+    /*************************************************************************************************/
+    // /* Check if measured battery voltage is equal or higher than maximum battery voltage threshold*/
+    // if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_THRESHOLD_MV)
+    // {
+    //     /*raise flag for that "the  over voltage error is occured"*/
+    //     ov_status=VMD_BVMD_ERROR_STATUS_FAIL;
+    // }/*if(battery_voltage_mV >= BVMD_CFG_VOLTAGE_MAXIMUM_THRESHOLD_MV)*/
+    // else
+    // {
+    //     /*check if the Battery voltage is less than or equal the clear value of the over voltage error */
+    //     if(battery_voltage_mV <=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CLEAR_THRESHOLD_MV )
+    //     {
+    //         /*raise flag for that "the  over voltage error is recovered"*/
+    //         ov_status=VMD_BVMD_ERROR_STATUS_PASS;
+    //     }/*if((battery_voltage_mV <= BVMD_CFG_VOLTAGE_MAXIMUM_CLEAR_THRESHOLD_MV ))*/
+    //     else
+    //     {
+                   
+    //     }/*End of if  if((battery_voltage_mV < BVMD_CFG_VOLTAGE_MAXIMUM_CLEAR_THRESHOLD_MV )) */
+                   
+    // } /* End of if(local_battery_voltage_scaled >= BVMD_CFG_VOLTAGE_MAXIMUM_THRESHOLD_MV) */
+
+    // /*check if measured battery voltage equal or higher than critical max voltage */
+    // if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_THRESHOLD_MV )
+    // {
+    //     /*raise flag for that "the critical over voltage error is occured"*/
+    //     cov_status=VMD_BVMD_ERROR_STATUS_FAIL;
+    // }/*end of if (battery_voltage_mV >= BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_THRESHOLD_MV )*/
+    // else 
+    // {
+    //     /*check if the measured value less than or equal the clear value of the critical over voltage error*/
+    //     if(battery_voltage_mV <=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_CLEAR_THRESHOLD_MV )
+    //     {
+    //         /*raise flag for that "the critical over voltage error is recovered"*/
+    //         cov_status=VMD_BVMD_ERROR_STATUS_PASS;
+    //     }/*end of if battery_voltage_mV <= BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_CLEAR_THRESHOLD_MV */
+    //     else
+    //     {   /*check if the last value before current one pass or fail */
                          
-        }/*else for battery_voltage_mV < BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_CLEAR_THRESHOLD_MV */
-    }/*else for (battery_voltage_mV >= BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_THRESHOLD_MV */
+    //     }/*else for battery_voltage_mV < BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_CLEAR_THRESHOLD_MV */
+    // }/*else for (battery_voltage_mV >= BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_THRESHOLD_MV */
 
-    /* Check if measured battery voltage is equal or less than minimum battery voltage threshold*/
-    if(battery_voltage_mV <=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MINIMUM_THRESHOLD_MV )
-    {
-        /*raise flag for that "the under voltage error is occured"*/
-        uv_status=VMD_BVMD_ERROR_STATUS_FAIL;
-    }/*if(battery_voltage_mV <= BVMD_CFG_VOLTAGE_MINIMUM_THRESHOLD_MV )*/
-    else
-    {
-         /*check if the measured value more than or equal the clear value of the under voltage error*/
-        if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MINIMUM_CLEAR_THRESHOLD_MV )
-        {
-            /*raise flag for that "the under voltage error is recovered"*/
-            uv_status=VMD_BVMD_ERROR_STATUS_PASS;
-        }/*if((battery_voltage_mV >= BVMD_CFG_VOLTAGE_MINIMUM_CLEAR_THRESHOLD_MV ))*/
-        else
-        {   /*check if the last value before current one pass or fail */
+    // /* Check if measured battery voltage is equal or less than minimum battery voltage threshold*/
+    // if(battery_voltage_mV <=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MINIMUM_THRESHOLD_MV )
+    // {
+    //     /*raise flag for that "the under voltage error is occured"*/
+    //     uv_status=VMD_BVMD_ERROR_STATUS_FAIL;
+    // }/*if(battery_voltage_mV <= BVMD_CFG_VOLTAGE_MINIMUM_THRESHOLD_MV )*/
+    // else
+    // {
+    //      /*check if the measured value more than or equal the clear value of the under voltage error*/
+    //     if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MINIMUM_CLEAR_THRESHOLD_MV )
+    //     {
+    //         /*raise flag for that "the under voltage error is recovered"*/
+    //         uv_status=VMD_BVMD_ERROR_STATUS_PASS;
+    //     }/*if((battery_voltage_mV >= BVMD_CFG_VOLTAGE_MINIMUM_CLEAR_THRESHOLD_MV ))*/
+    //     else
+    //     {   /*check if the last value before current one pass or fail */
                    
                         
-        }/*else of if((battery_voltage_mV > BVMD_CFG_VOLTAGE_MINIMUM_CLEAR_THRESHOLD_MV ))*/
+    //     }/*else of if((battery_voltage_mV > BVMD_CFG_VOLTAGE_MINIMUM_CLEAR_THRESHOLD_MV ))*/
                 
-    } /* End of if(local_battery_voltage_scaled <= BVMD_CFG_VOLTAGE_MINIMUM_THRESHOLD_MV ) */
+    // } /* End of if(local_battery_voltage_scaled <= BVMD_CFG_VOLTAGE_MINIMUM_THRESHOLD_MV ) */
 
-    /*check if measured less than critical minimum voltage */
-    if(battery_voltage_mV <=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_THRESHOLD_MV )
-    {
-        /*raise flag for that "the critical under voltage error is occured"*/
-        cuv_status=VMD_BVMD_ERROR_STATUS_FAIL;  
-    }
-    else 
-    {
-       /*check if the measured value more than or equal the clear value of the critical under voltage error*/
-        if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_CLEAR_THRESHOLD_MV )
-        {
-            /*raise flag for that "the critical under voltage error is recovered"*/
-            cuv_status=VMD_BVMD_ERROR_STATUS_PASS;
-        }/*end if (battery_voltage_mV >= BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_CLEAR_THRESHOLD_MV )*/
-        else
-        {   /*check if the last value before current one pass or fail */
+    // /*check if measured less than critical minimum voltage */
+    // if(battery_voltage_mV <=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_THRESHOLD_MV )
+    // {
+    //     /*raise flag for that "the critical under voltage error is occured"*/
+    //     cuv_status=VMD_BVMD_ERROR_STATUS_FAIL;  
+    // }
+    // else 
+    // {
+    //    /*check if the measured value more than or equal the clear value of the critical under voltage error*/
+    //     if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_CLEAR_THRESHOLD_MV )
+    //     {
+    //         /*raise flag for that "the critical under voltage error is recovered"*/
+    //         cuv_status=VMD_BVMD_ERROR_STATUS_PASS;
+    //     }/*end if (battery_voltage_mV >= BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_CLEAR_THRESHOLD_MV )*/
+    //     else
+    //     {   /*check if the last value before current one pass or fail */
                         
-        }/*else for (battery_voltage_mV > BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_CLEAR_THRESHOLD_MV )*/
-    }/*else for battery_voltage_mV <= BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_THRESHOLD_MV */
+    //     }/*else for (battery_voltage_mV > BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_CLEAR_THRESHOLD_MV )*/
+    // }/*else for battery_voltage_mV <= BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_THRESHOLD_MV */
+    /*************************************************************************************************/
+    /*************************************************************************************************/
 
     /*report to the AEVM the status of the over voltage error*/    
-    AEVM_EventReport(BVMD_ERROR_OVERTHRESHOLD, ov_status);
+    //AEVM_EventReport(BVMD_ERROR_OVERTHRESHOLD, ov_status);
+    /********************* STUB *********************/
+    AEVM_EventReport();
+     
     /*report to the AEVM the status of the critical over voltage error*/  
-    AEVM_EventReport(BVMD_ERROR_OVERTHRESHOLD_CRITICAL, cov_status);
+    //AEVM_EventReport(BVMD_ERROR_OVERTHRESHOLD_CRITICAL, cov_status);
+    /********************* STUB *********************/
+    AEVM_EventReport();
+
     /*report to the AEVM the status of the under voltage error*/  
-    AEVM_EventReport(BVMD_ERROR_UNDERTHRESHOLD, uv_status);
+    //AEVM_EventReport(BVMD_ERROR_UNDERTHRESHOLD, uv_status);
+    /********************* STUB *********************/
+    AEVM_EventReport();
+
     /*report to the AEVM the status of the critical under voltage error*/  
-    AEVM_EventReport(BVMD_ERROR_UNDERTHRESHOLD_CRITICAL, cuv_status);
-    #if VMD_LV_MODE == VMD_ENABLE
+    //AEVM_EventReport(BVMD_ERROR_UNDERTHRESHOLD_CRITICAL, cuv_status);
+    /********************* STUB *********************/
+    AEVM_EventReport();
+
+
+    printf("AEVM_EventReport Called = %d times\n", counter);
+
+#if VMD_LV_MODE == VMD_ENABLE
     /*report to the AEVM the status of the over logic supply voltage error*/  
     AEVM_EventReport(BVMD_ERROR_LOGIC_SUPPLY_OVERTHRESHOLD, AEVM_EventReportSt_logic_supply_OV_STATUS);
     /*report to the AEVM the status of the under logic supply voltage error*/  
     AEVM_EventReport(BVMD_ERROR_LOGIC_SUPPLY_UNDERTHRESHOLD, AEVM_EventReportSt_logic_supply_UV_STATUS_);
 #endif
+
 }
+
+
+int main() {
+    test_cases();
+    return 0;
+}   
