@@ -1,0 +1,1 @@
+ "C:/Users/user/Desktop/GoogleTest-Mingw/googletest-216c37f057ae0fff38062984c890df912f40ccf6/build/output/lib/libgtest.dll.a" -lpthread -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
