@@ -1,0 +1,3 @@
+C:/Users/user/Desktop/GoogleTest-Mingw/task/build/CMakeFiles/runTests.dir
+C:/Users/user/Desktop/GoogleTest-Mingw/task/build/CMakeFiles/edit_cache.dir
+C:/Users/user/Desktop/GoogleTest-Mingw/task/build/CMakeFiles/rebuild_cache.dir
