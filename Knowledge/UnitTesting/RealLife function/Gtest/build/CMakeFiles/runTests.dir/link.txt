@@ -1,3 +1,0 @@
-"C:\Program Files\CMake\bin\cmake.exe" -E rm -f CMakeFiles\runTests.dir/objects.a
-C:\Users\user\Desktop\GoogleTest-Mingw\w64devkit\bin\ar.exe qc CMakeFiles\runTests.dir/objects.a @CMakeFiles\runTests.dir\objects1.rsp
-C:\Users\user\Desktop\GoogleTest-Mingw\w64devkit\bin\c++.exe -Wl,--whole-archive CMakeFiles\runTests.dir/objects.a -Wl,--no-whole-archive -o runTests.exe -Wl,--out-implib,librunTests.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\runTests.dir\linkLibs.rsp
