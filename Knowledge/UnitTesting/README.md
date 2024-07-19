@@ -15,6 +15,14 @@
     - **Arrange:** Set up the test environment and initialize objects.
     - **Act:** Execute the unit being tested.
     - **Assert:** Verify the result.
+ 
+  
+Planning the test cases
+-------------------------
+
+
+![image](https://github.com/user-attachments/assets/bdbacac9-281c-41b7-b3ca-10927c6dbdb9)
+
 ----
 
 - assert:
@@ -41,9 +49,3 @@
 
 
 
-
-Planning the test cases
--------------------------
-
-
-![image](https://github.com/user-attachments/assets/bdbacac9-281c-41b7-b3ca-10927c6dbdb9)
