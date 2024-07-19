@@ -40,11 +40,15 @@ Note, you can use the demo in the folder as a start
         ex:cmake -G "MinGW Makefiles" -B build -DGTest_DIR=C:\Users\user\Documents\Gtest\googletest\build\output\bin
 ![image](https://github.com/user-attachments/assets/db3da366-907d-4c98-9a78-a3bd8ba9f071)
 3- type this command : cmake --build build
+
 ![image](https://github.com/user-attachments/assets/ee96c842-bc7f-4246-9de9-79f65c2c68b6)
 
 4- Finally, now you can run your tests and see the result:
+
 1- cd build 
+
 2- type : runTests.exe
+
 ![image](https://github.com/user-attachments/assets/d9b7affa-67b8-4c71-9c5a-77d7d24df008)
 
 
