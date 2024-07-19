@@ -5,7 +5,7 @@ What is Google Test?
 
 installing Gtest:
 -------------------
- - you will find all of the required files in this folder https://drive.google.com/drive/folders/1t1mM2IlaMGep2qWd7dnMJBYG_9puzG3r?usp=drive_link
+ - you will find all of the required files in this folder : https://mega.nz/folder/sW9mHbIS#7dcdJ405-WBEW-KiJ88Kcw
    
 1- Install MinGW 64 kit from the attached link.
 2- add cmake/bin , git/bin , mingw64/bin in your environment variables in path
