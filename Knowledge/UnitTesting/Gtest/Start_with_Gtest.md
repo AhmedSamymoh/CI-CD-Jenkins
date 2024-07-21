@@ -75,6 +75,19 @@ How it works?
 
 
 
+## Setting GTEST_DIR as environment variable permanently 
+- For PowerShell:
+You can use the [System.Environment]::SetEnvironmentVariable method to set the variable permanently:
+- Don't foget to change `O:\01. Programs\GTest\googletest\build\output\bin ` with your directory
+```powershell
+[System.Environment]::SetEnvironmentVariable("GTEST_DIR", "O:\01. Programs\GTest\googletest\build\output\bin", [System.EnvironmentVariableTarget]::User)
+```
+
+- Now you can use:
+```batch
+cmake -G "MinGW Makefiles" -B build -DGTest_DIR=$env:GTEST_DIR
+```
+
 
 
 
