@@ -1,19 +1,39 @@
 #include <stdio.h>
 #include <assert.h>
-
+/******************************************************/
 #define  VMD_LV_MODE 				0
 #define AEVM_EVENT_REPORT_ST_INIT   0
-#define VMD_BVMD_ERROR_STATUS_PASS  0
 #define CC_VMD_INTERRUPT_VARIANT    0
+
 #define AEVM_EVENT_REPORT_ST_FAIL    0
+#define AEVM_EVENT_REPORT_ST_PASS    1
 
-#define VMD_ENABLE                  1
-#define VMD_VARI_POLLING_MODE       1
+#define VMD_BVMD_ERROR_STATUS_FAIL   0
+#define VMD_BVMD_ERROR_STATUS_PASS   1
 
-#define VMD_DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS        1024
-#define VMD_DCVM_CFG_MAX_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS  800
-#define VMD_DCVM_CFG_MIN_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS  300
-#define VMD_DCVM_CFG_MIN_VOLTAGE_THRESHOLD_SCALED_VOLTS        200
+
+
+#define VMD_ENABLE                  10
+#define VMD_VARI_POLLING_MODE       10
+
+#define VMD_DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS             1024
+#define VMD_DCVM_CFG_MAX_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS       800
+#define VMD_DCVM_CFG_MIN_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS       300
+#define VMD_DCVM_CFG_MIN_VOLTAGE_THRESHOLD_SCALED_VOLTS             200
+
+#define VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_THRESHOLD_MV          1280
+#define VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CRITICAL_CLEAR_THRESHOLD_MV    1520
+#define VMD_BVMD_CFG_VOLTAGE_MAXIMUM_THRESHOLD_MV                   1024
+#define VMD_BVMD_CFG_VOLTAGE_MAXIMUM_CLEAR_THRESHOLD_MV             1008
+
+
+#define VMD_BVMD_CFG_VOLTAGE_MINIMUM_THRESHOLD_MV                   200
+#define VMD_BVMD_CFG_VOLTAGE_MINIMUM_CLEAR_THRESHOLD_MV             200
+#define VMD_BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_THRESHOLD_MV          200
+#define VMD_BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_CLEAR_THRESHOLD_MV    200
+
+/******************************************************/
+
 
 typedef unsigned char       uint8_t;
 typedef unsigned short      uint16_t;
@@ -21,6 +41,8 @@ typedef unsigned int        uint32_t;
 typedef unsigned long long  uint64_t;
 
 uint16_t VMD_DcVoltage = 0;
+
+uint16_t battery_voltage_mV = 0;
 
 /******************************************************/
 
@@ -33,6 +55,7 @@ uint8_t counter = 0;
 void AEVM_EventReport(){
     counter++;
 }
+
 
 void test_cases() {
     uint16_t test_values[] = {1024, 1000, 800, 799, 810, 299, 310, 200, 210};
@@ -49,6 +72,8 @@ void test_cases() {
         printf("Test Case %d Passed\n", i+1);   
     }
 }
+
+
 void VMD_SlowCycle(void)
 {
     /*Declaration for last reported status variables for over/under voltage thresholds */
@@ -100,8 +125,8 @@ void VMD_SlowCycle(void)
         /********************* STUB *********************/
         AEVM_EventReport();
         
-    }                                   /*End of if(DCVM_voltage >= DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS) */
-   
+    }/*End of if(DCVM_voltage >= DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS) */
+
     else if ((VMD_DcVoltage < VMD_DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS) && (VMD_DcVoltage > VMD_DCVM_CFG_MAX_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS))
     {
         if (last_status_reported_ov == AEVM_EVENT_REPORT_ST_FAIL)
@@ -130,6 +155,7 @@ void VMD_SlowCycle(void)
         //last_status_reported_ov = AEVM_EVENT_REPORT_ST_PASS;
      
     }/*End of else of if(DCVM_voltage >= DCVM_CFG_MAX_VOLTAGE_THRESHOLD_SCALED_VOLTS)*/
+
     /*UnderVoltage Error Handling*/
     if(VMD_DcVoltage <= VMD_DCVM_CFG_MIN_VOLTAGE_THRESHOLD_SCALED_VOLTS)
     {
@@ -141,6 +167,7 @@ void VMD_SlowCycle(void)
         /********************* STUB *********************/
         AEVM_EventReport();
     }
+    
 
     else if ((VMD_DcVoltage > VMD_DCVM_CFG_MIN_VOLTAGE_THRESHOLD_SCALED_VOLTS) && (VMD_DcVoltage < VMD_DCVM_CFG_MIN_CLEAR_VOLTAGE_THRESHOLD_SCALED_VOLTS))
     {
@@ -167,7 +194,7 @@ void VMD_SlowCycle(void)
         /********************* STUB *********************/
         AEVM_EventReport();
      
-        //last_status_reported_uv = AEVM_EVENT_REPORT_ST_PASS;
+        last_status_reported_uv = AEVM_EVENT_REPORT_ST_PASS;
      
         /*update "under DC voltage detected" flag at COM signal with False to indicate No under Voltage error exists*/
     }
@@ -219,7 +246,7 @@ void VMD_SlowCycle(void)
     #endif
 
     /*************************************************************************************************/
-    /*************************************************************************************************/
+    // /*************************************************************************************************/
     // /* Check if measured battery voltage is equal or higher than maximum battery voltage threshold*/
     // if(battery_voltage_mV >=(uint16_t) VMD_BVMD_CFG_VOLTAGE_MAXIMUM_THRESHOLD_MV)
     // {
@@ -302,6 +329,7 @@ void VMD_SlowCycle(void)
                         
     //     }/*else for (battery_voltage_mV > BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_CLEAR_THRESHOLD_MV )*/
     // }/*else for battery_voltage_mV <= BVMD_CFG_VOLTAGE_MINIMUM_CRITICAL_THRESHOLD_MV */
+
     /*************************************************************************************************/
     /*************************************************************************************************/
 
