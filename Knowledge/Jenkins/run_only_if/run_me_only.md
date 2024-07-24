@@ -29,3 +29,28 @@
 
 
 - Set Environment Variables: Checks if test1.bat, test2.bat, or test3.bat are in the list of changed files and sets corresponding environment variables (RUN_TEST1, RUN_TEST2, RUN_TEST3) to true or false.
+
+![image](https://github.com/user-attachments/assets/86caf548-ccf2-40b0-b745-51bfed2dff2e)
+
+
+
+
+![image](https://github.com/user-attachments/assets/ef62c8f2-8f4f-414f-b0d8-88bb77016960)
+
+
+
+
+![image](https://github.com/user-attachments/assets/b6e3fc9b-d190-4698-bf58-bc42b16639ed)
+
+
+
+
+![image](https://github.com/user-attachments/assets/6610a4b9-4f2a-46f2-ab04-c9e9c7ecd3db)
+
+
+
+![image](https://github.com/user-attachments/assets/9ff5e3c4-6ba4-43f2-a690-57e0e9e21bf5)
+
+
+
+
