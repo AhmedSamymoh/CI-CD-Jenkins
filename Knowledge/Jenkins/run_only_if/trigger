@@ -1,0 +1,71 @@
+pipeline {
+    agent any
+    environment {
+        PATH = "${env.PATH};C:\\Program Files\\Git\\bin;C:\\WINDOWS\\SYSTEM32"  // Adjust this path if needed
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "Checking out the source code..."
+                // Checkout your repository
+            }
+        }
+        
+        stage('Check for Changes') {
+            steps {
+                script {
+                    // Run git command to get changed files
+                    def changes = bat(script: '\"C:\\Program Files\\Git\\bin\\git.exe\" diff --name-only HEAD~1 HEAD', returnStdout: true).trim()
+                    
+                    // Check if the specific batch files are in the list of changed files
+                    env.RUN_TEST1 = changes.contains('test1.bat') ? 'true' : 'false'
+                    env.RUN_TEST2 = changes.contains('test2.bat') ? 'true' : 'false'
+                    env.RUN_TEST3 = changes.contains('test3.bat') ? 'true' : 'false'
+                }
+            }
+        }
+        
+        stage('Run Parallel Jobs') {
+            parallel {
+                stage('Run Test1') {
+                    when {
+                        expression {
+                            return env.RUN_TEST1 == 'true'
+                        }
+                    }
+                    steps {
+                        echo "Running test1.bat because it was changed."
+                        // Add your steps here to run test1.bat
+                        bat 'test1.bat'
+                    }
+                }
+
+                stage('Run Test2') {
+                    when {
+                        expression {
+                            return env.RUN_TEST2 == 'true'
+                        }
+                    }
+                    steps {
+                        echo "Running test2.bat because it was changed."
+                        // Add your steps here to run test2.bat
+                        bat 'test2.bat'
+                    }
+                }
+
+                stage('Run Test3') {
+                    when {
+                        expression {
+                            return env.RUN_TEST3 == 'true'
+                        }
+                    }
+                    steps {
+                        echo "Running test3.bat because it was changed."
+                        // Add your steps here to run test3.bat
+                        bat 'test3.bat'
+                    }
+                }
+            }
+        }
+    }
+}
