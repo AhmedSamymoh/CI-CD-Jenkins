@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Install Dependencies') {
+            steps {
+                sh 'sudo apt-get update'
+                sh 'sudo apt-get install -y libgtest-dev cmake'
+                sh 'cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp *.a /usr/lib'
+            }
+        }
+        stage('Compile') {
+            steps {
+                sh 'g++ -o test_addition test_addition.cpp -lgtest -lgtest_main -pthread'
+                sh 'g++ -o test_multiplication test_multiplication.cpp -lgtest -lgtest_main -pthread'
+            }
+        }
+        stage('Run Tests') {
+            steps {
+                script {
+                    try {
+                        sh './test_addition'
+                        sh './test_multiplication'
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        error('Tests failed')
+                    }
+                }
+            }
+        }
+    }
+}
