@@ -75,7 +75,7 @@ gcc -fprofile-arcs -ftest-coverage -o calc main.c calc.c
 
 ### Installation
 
-> **Warning**  
+> [!WARNING]  
 > Using lcov on Windows can be a bit challenging because it's primarily designed for Unix-like systems. However, you can set it up using a combination of Cygwin or MSYS2, which provide Unix-like environments on Windows.
 
 ### Steps to Install and Use `lcov`:
