@@ -1,12 +1,12 @@
 # Static Code Analysis:
 ## Using CppCheck
 
-- if we run a simple `main.c` it will complile and run put accually there is an issues with the code which `static code analysis tools` figure out them 
+- Compiling and running a simple `main.c` file might work, but there could be hidden issues in the code. `Static code analysis tools can` help identify these problems before you even run the program.
 
 ```bash
-O:\Jenkins>gcc main.c -o aloo
+O:\Jenkins>gcc main.c -o samiii
 
-O:\Jenkins>aloo.exe
+O:\Jenkins>samiii.exe
 Hello, World.
 ```
 
@@ -14,7 +14,7 @@ Hello, World.
 ```c
 int main(){
         /*This is a wild Pointer */
-        int *ptr;
+        int *ptr;d
 
         int array[10];
 
@@ -78,3 +78,57 @@ main.c:1:0: style: Required: The Standard Library input/output functions shall n
 #include <stdio.h>
 ^
 ```
+
+
+----
+----
+
+
+
+
+# Parsing the Output for Jenkins Pipline:
+
+-  Write the output to a txt file
+```bash
+cppcheck --addon="O:\Jenkins\misra.json" --suppress=missingIncludeSystem main.c > MisraCkOut.txt 2>&1
+```
+```bash
+mkdir MisraC_Check
+cd MisraC_Check"
+```
+
+
+- `CheckMisraC.py`: 
+      - Check if the txt file contains a mandatory violation
+      - Write the optimized output to a new file `OptimizedMisraCkOut.txt`
+      - Print errors if there are mandatory violations
+
+- Case (1):
+
+![alt text](asserts/image1.png)
+
+- Case (2):
+
+![alt text](asserts/image.png)
+
+- Jenkins Dashboard:
+
+> Just for prove of concept i inject in the python script to parse `Required` as a Mandatory rule and i remove it to check it again and it works :)
+
+
+<div style="text-align: center; padding: 10px;">
+  <img src="asserts/j1.png" alt="P" width="700">
+</div>
+
+
+<div style="text-align: center; padding: 10px;">
+  <img src="asserts/j2.png" alt="P" width="700">
+</div>
+
+<div style="text-align: center; padding: 10px;">
+  <img src="asserts/j3.png" alt="P" width="700">
+</div>
+
+<div style="text-align: center; padding: 10px;">
+  <img src="asserts/j4.png" alt="P" width="700">
+</div>
