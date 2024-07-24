@@ -39,3 +39,11 @@ gcov main.c
   -   '-' : indicates that the line is not an executable statement
   -  '#####' : indicates that the line is not excuted yet 
 ------------------------------------------------------------------------------------------------------------
+## Notes
+ 1. Do not use optimization options while using code coverage. That changes source code
+ line number to machine code mapping adversely
+ 2. Running the executable just updates “.gcda” files. The “.c.gcov” has to be generated
+ manually for each source code file by doing “gcov <file.c>”.\
+ This command correlates the
+structural information in “.gcno” file with data information in “.gcda” file, to generate
+ textual report in “.c.gcov” file
