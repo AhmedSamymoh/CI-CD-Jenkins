@@ -69,7 +69,20 @@ gcc -fprofile-arcs -ftest-coverage -o calc main.c calc.c
 ```
 
 
+# Create GUI Reports for the code coverage
+#### Using `lcov` on Windows with MSYS2
+### Installation
 
+> [!WARNING]
+> Using lcov on Windows can be a bit challenging because it's primarily designed for Unix-like systems. However, you can set it up using a combination of Cygwin or MSYS2, which provide Unix-like environments on Windows
+
+Install my-project with npm
+
+```bash
+  npm install my-project
+  cd my-project
+```
+    
 4- Use gcov to generate the coverage report. Run gcov on your source file (calc.c), not the test driver file.
 
 ```sh
