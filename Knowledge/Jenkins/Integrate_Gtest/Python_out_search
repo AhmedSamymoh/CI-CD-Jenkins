@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    environment {
+        PYTHON_PATH = 'C:\\Program Files\\Python38\\python'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "Checking out the source code..."
+                checkout scm
+            }
+        }
+        
+        stage('Run Python Script') {
+            steps {
+                script {
+                    // Run the Python script and capture the exit status
+                    def status = bat(script: "${env.PYTHON_PATH} search.py", returnStatus: true)
+                    if (status != 0) {
+                        echo "Word not found in the file."
+                    } else {
+                        error("Terminating the build: word found in the file.")
+                    }
+                }
+            }
+        }
+    }
+}
