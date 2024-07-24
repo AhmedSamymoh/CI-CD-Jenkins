@@ -69,23 +69,63 @@ gcc -fprofile-arcs -ftest-coverage -o calc main.c calc.c
 ```
 
 
-# Create GUI Reports for the code coverage
+
+# Create GUI Reports for Code Coverage
 #### Using `lcov` on Windows with MSYS2
+
 ### Installation
 
-> [!WARNING]
-> Using lcov on Windows can be a bit challenging because it's primarily designed for Unix-like systems. However, you can set it up using a combination of Cygwin or MSYS2, which provide Unix-like environments on Windows
+> **Warning**  
+> Using lcov on Windows can be a bit challenging because it's primarily designed for Unix-like systems. However, you can set it up using a combination of Cygwin or MSYS2, which provide Unix-like environments on Windows.
 
-Install my-project with npm
+### Steps to Install and Use `lcov`:
 
-```bash
-  npm install my-project
-  cd my-project
-```
-    
-4- Use gcov to generate the coverage report. Run gcov on your source file (calc.c), not the test driver file.
+1. **Install MSYS2:**
+   - Download the MSYS2 installer from the [MSYS2 website](https://www.msys2.org/).
+   - Run the installer and follow the installation instructions.
 
-```sh
-gcov -b calc.c
+2. **Update MSYS2 Packages:**
+   - Open the MSYS2 shell (`MSYS2 MinGW 64-bit` or `MSYS2 MinGW 32-bit` depending on your system architecture).
+   - Update the package database and core system packages by running:
+     ```sh
+     pacman -Syu
+     ```
+   - Restart the MSYS2 shell after the update.
 
-```
+3. **Install Required Packages:**
+   - Install GCC, gcov, lcov, and other essential tools by running:
+     ```sh
+     pacman -S base-devel mingw-w64-x86_64-toolchain lcov
+     ```
+
+4. **Compile Your Code with Coverage Flags:**
+   - Open the MSYS2 MinGW shell (`MSYS2 MinGW 64-bit` or `MSYS2 MinGW 32-bit`).
+   - Navigate to your project directory.
+   - Compile your code with `-fprofile-arcs` and `-ftest-coverage` flags:
+     ```sh
+     gcc -fprofile-arcs -ftest-coverage -o calc calc.c
+     ```
+
+5. **Run Your Executable:**
+   - Run the compiled executable to generate coverage data files (.gcda and .gcno):
+     ```sh
+     ./calc
+     ```
+
+6. **Generate Coverage Data with lcov:**
+   - Capture the coverage data:
+     ```sh
+     lcov --capture --directory . --output-file calc.info
+     ```
+   - This will create a `calc.info` file containing the coverage data.
+
+7. **Generate HTML Report with genhtml:**
+   - Generate an HTML report from the `calc.info` file:
+     ```sh
+     genhtml calc.info --output-directory out
+     ```
+
+8. **View the HTML Report:**
+   - Open the `index.html` file in the `out` directory using any web browser to view the coverage report.
+
+By following these steps, you can successfully generate GUI reports for code coverage using `lcov` on Windows.
