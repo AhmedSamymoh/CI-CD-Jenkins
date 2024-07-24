@@ -30,7 +30,10 @@ gcov main.c
 #It will show the result of the code Coverage
 ```
 - Note that file (main.c.gcov) has been created
-- If we open it It will show all the details about the coverage
+- If we open it It will show all the details about the coverage\
+![image](https://github.com/user-attachments/assets/6d0c631d-5c68-41f9-bcb9-eeb8abb5cacc)
+
+  
 #### The first column indicates how many times a line is excuted. it might have :
   -   a number : indicates how many times the line got excuted
   -   '-' : indicates that the line is not an executable statement
