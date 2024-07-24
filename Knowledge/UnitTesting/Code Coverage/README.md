@@ -20,7 +20,8 @@ gcc -profile-arcs -ftest-coverage main.c
 ```
 - It will show (.out) file and (.gnco) file
 
-- ![alt text](image-1.png)
+- ![image](https://github.com/user-attachments/assets/1367b45b-e5dd-4093-bad6-df193b17d887)
+
 
 - Let us now run a test case
 ```bash
