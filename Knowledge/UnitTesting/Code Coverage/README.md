@@ -15,7 +15,7 @@
 
 - suppose we have a main.c file and we want to see the code coverge of it
 ```bash
-gcc -profile-arcs -ftest-coverage main.c
+gcc -fprofile-arcs -ftest-coverage main.c
 #Replace main.c with your C file
 ```
 - It will show (.out) file and (.gnco) file
