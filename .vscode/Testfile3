@@ -1,0 +1,21 @@
+#include <iostream>
+#include <cassert>
+
+// Function to be tested
+int multiply(int a, int b) {
+    return a * b;
+}
+
+// Test case
+void test_multiply() {
+    assert(multiply(2, 3) == 6);   // Should pass
+    assert(multiply(-1, 1) == -1); // Should pass
+    assert(multiply(0, 0) == 0);   // Should pass
+    assert(multiply(2, 2) == 5);   // Should fail
+}
+
+int main() {
+    test_multiply();
+    std::cout << "All tests passed for multiplication!" << std::endl;
+    return 0;
+}
