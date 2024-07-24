@@ -47,3 +47,32 @@ gcov main.c
  This command correlates the
 structural information in “.gcno” file with data information in “.gcda” file, to generate
  textual report in “.c.gcov” file
+
+## To know the Number of branches in the code :
+1- Suppose we have two files `main.c` and `calc.c` 
+Compile Both Files with Coverage Flags
+
+2- Compile your `calc.c` and `main.c` files with coverage flags. Make sure to link them together.
+
+
+```sh
+gcc -fprofile-arcs -ftest-coverage -o calc main.c calc.c  
+``` 
+
+
+ 
+
+3- Run the generated executable to produce the coverage data files (.gcda and .gcno).
+
+```sh
+./calc
+```
+
+
+
+4- Use gcov to generate the coverage report. Run gcov on your source file (calc.c), not the test driver file.
+
+```sh
+gcov -b calc.c
+
+```
