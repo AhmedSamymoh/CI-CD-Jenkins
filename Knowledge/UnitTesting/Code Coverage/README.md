@@ -5,13 +5,14 @@
  One measure is that we have executed each code statement at least once.\
  Code Coverage tools, like gcov, help us know which lines of the code have been executed (and
  how many times)\
- Quality metrics and customer agreements often demand close to 100% code coverage reports\
+ Quality metrics and customer agreements often demand close to 100% code coverage reports
 
 
 -----------------------------------------------------------------------------------------------------
 
 ## Using GCC compiler
-- To Make the code coverage you will have to install ' GCC ' compiler
+> [!TIP]
+> To Make the code coverage you will have to install ' GCC ' compiler
 
 - suppose we have a main.c file and we want to see the code coverge of it
 ```bash
