@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    parameters {
+        string(name: 'BRANCH_NAME', defaultValue: 'test', description: 'Branch to build')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                script {
+                   bat """
+                    git fetch --all
+                    git checkout ${params.BRANCH_NAME}
+                    """
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                // Your build steps go here
+                echo "Building branch: ${params.BRANCH_NAME}"
+                echo "test test "
+bat """
+test2.bat 
+"""
+            }
+        }
+    }
+}
