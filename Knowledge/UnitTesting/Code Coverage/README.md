@@ -49,15 +49,15 @@ gcov main.c
 structural information in “.gcno” file with data information in “.gcda” file, to generate
  textual report in “.c.gcov” file
 
-## To know the Number of branches in the code :
-1- Suppose we have two files `main.c` and `calc.c` 
+## -> To know the Number of branches in the code with real example  :
+1- Suppose we have two files `main.c` and `test_branches.c` 
 Compile Both Files with Coverage Flags
 
-2- Compile your `calc.c` and `main.c` files with coverage flags. Make sure to link them together.
+2- Compile your `test_branches.c` and `main.c` files with coverage flags. Make sure to link them together. `ahmed` is the name of the executable file!
 
 
 ```sh
-gcc -fprofile-arcs -ftest-coverage -o calc main.c calc.c  
+gcc -fprofile-arcs -ftest-coverage -o ahmed main.c test_branches.c  
 ``` 
 
 
@@ -66,9 +66,24 @@ gcc -fprofile-arcs -ftest-coverage -o calc main.c calc.c
 3- Run the generated executable to produce the coverage data files (.gcda and .gcno).
 
 ```sh
-./calc
+.\ahmed.exe
+```
+4- Run the gcov of the file :
+
+```batch
+ gcov -b test_branches.c
 ```
 
+5- You will see the output the the following :
+
+```
+File 'test_branches.c'
+Lines executed:35.71% of 28
+Branches executed:100.00% of 14
+Taken at least once:35.71% of 14
+Calls executed:20.00% of 10
+Creating 'test_branches.c.gcov'
+```
 
 
 # Create GUI Reports for Code Coverage
