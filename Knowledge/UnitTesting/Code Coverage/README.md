@@ -84,6 +84,12 @@ Taken at least once:35.71% of 14
 Calls executed:20.00% of 10
 Creating 'test_branches.c.gcov'
 ```
+#### explaination:
+-  Line executed: the lines that is already excuted in the code
+-  Branches executed : Your code has 14 decision points where the program can branch out into different execution paths
+-  
+
+
 
 
 # Create GUI Reports for Code Coverage
