@@ -1,11 +1,7 @@
 # Jira
-- Jira is a popular project management tool used by software development teams to plan, track, and release software.
-## Jira Authentication with Jenkins
-- Get your API Tokin `JIRA_API_TOKEN` from Jira website
-- Go to `Credentials` in jenkins and add specific one for Jira Credentials
-- Download `Jira Plugin`
+- Jira is a popular project management tool used by software development teams to plan, track, and release software.`
 
-Step 1: Getting API token for Jira
+## Step 1: Getting API token for Jira
 Navigate to Security Settings:
 
 Once logged in, click on the Security tab in the left sidebar.
@@ -25,9 +21,9 @@ Create the Token:
 Click Create.
 
 
-Step 2: Install the Jira Plugin in Jenkins
+## Step 2: Install the Jira Plugin in Jenkins
 
-Step 3: Integrating Jira in Jenkins
+## Step 3: Integrating Jira in Jenkins
 Open Jenkins Dashboard:
 
 Navigate to Manage Jenkins:
@@ -48,7 +44,7 @@ Enter your Username and API token.
 Click Test Connection to verify the connection.
 
 
-Step 5: Manage your Jira
+## Step 4: Manage your Jira
 
 Add your epics, your tasks, and your child tasks 
 
@@ -59,7 +55,7 @@ Create the Sprints accordingly and set the deadlines and the due dates.
 
 (Optional) Assign each team member to a role and to a different task
 
-Step 6: Configure Jenkins Job to Integrate with Jira
+## Step 5: Configure Jenkins Job to Integrate with Jira
 Create or Configure a Jenkins Job:
 
 Go to your Jenkins instance and create a new job or configure an existing one.
@@ -72,7 +68,7 @@ Configure the Jira integration settings, such as updating issues based on build 
 Click Save.
 
 
-Step 7: Test the Integration
+## Step 6: Test the Integration
 Create a Jira Issue:
 
 Create a new issue in your Jira project.
