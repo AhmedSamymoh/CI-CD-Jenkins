@@ -151,3 +151,28 @@ Creating 'test_branches.c.gcov'
    - Open the `index.html` file in the `out` directory using any web browser to view the coverage report.
 
 By following these steps, you can successfully generate GUI reports for code coverage using `lcov` on Windows.
+
+
+----------------
+
+> If you run this `gcov -b test_branches.c` and got this
+
+```batch
+test_branches.gcno:cannot open notes file
+test_branches.gcda:cannot open data file, assuming not executed
+No executable lines
+```
+
+> this could help: 🫡
+```batch
+gcov -b -o . main-test_branches.gcda
+```
+
+```batch
+File 'test_branches.c'
+Lines executed:35.71% of 28
+Branches executed:100.00% of 14
+Taken at least once:35.71% of 14
+Calls executed:20.00% of 10
+Creating 'test_branches.c.gcov'
+```
