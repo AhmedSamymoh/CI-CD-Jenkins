@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    environment {
+       PYTHON_PATH = 'C:\\Users\\Rana\\AppData\\Local\\Programs\\Python\\Python312\\python.exe'
+        
+    }
+
+
+    stages {
+        stage('Run jira') {
+            steps {
+                // Run the batch file located in the workspace
+                bat 'jira.bat'
+bat 'sprint.bat'
+
+
+bat script: """  
+
+  "C:\\Users\\Rana\\AppData\\Local\\Programs\\Python\\Python312\\python.exe" get_heighest.py
+
+"""
+ 
+            }
+        }
+    }
+}
