@@ -36,7 +36,6 @@ def find_highest_sprint(file_path):
             if len(row) > 1 and row[1].startswith("Sprint "):  # Ensure the column starts with "Sprint "
                 try:
                     sprint = get_sprint_number(row[1])
-                    print(sprint)
                     if highest_sprint is None or sprint > highest_sprint:
                         highest_sprint = sprint
                 except ValueError:
