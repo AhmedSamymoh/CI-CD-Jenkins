@@ -1,0 +1,90 @@
+# Testing C Code with pytest
+
+This guide demonstrates how to use `pytest` to test C code by creating a Python wrapper and performing integration tests.
+
+## Prerequisites
+
+- Python 3.x
+- `pytest` library
+- GCC (GNU Compiler Collection)
+
+## Installation
+
+First, ensure `pytest` is installed. You can install it using `pip3`:
+
+```sh
+pip3 install pytest
+
+Step 1: Write Your C Code
+
+    Example: File named Example.c for testing
+
+"
+#include <stdio.h>
+
+int add(int x, int y) {
+    return x + y;
+}
+
+int sum_array(int *arr, int n) {
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+        sum = add(sum, arr[i]);
+    }
+    return sum;
+} "
+
+Step 2: Compile the C Code into a Shared Library
+
+    Compile the C code into a shared library using gcc
+        " gcc -shared -o libexample.so -fPIC example.c "
+
+Step 3: Write Python Wrapper Using ctypes
+
+Create a file named test_integration.py with the following content:
+
+"import ctypes
+import pytest
+
+# Load the shared library
+lib = ctypes.CDLL('./libexample.so')
+
+# Define the argument and return types of the C functions
+lib.add.argtypes = [ctypes.c_int, ctypes.c_int]
+lib.add.restype = ctypes.c_int
+
+lib.sum_array.argtypes = [ctypes.POINTER(ctypes.c_int), ctypes.c_int]
+lib.sum_array.restype = ctypes.c_int
+
+def test_add():
+    assert lib.add(2, 3) == 5
+    assert lib.add(0, 0) == 0
+    assert lib.add(-1, 1) == 0
+
+def test_sum_array():
+    arr = (ctypes.c_int * 3)(1, 2, 3)
+    assert lib.sum_array(arr, 3) == 6
+    
+    arr = (ctypes.c_int * 4)(-1, 1, -2, 2)
+    assert lib.sum_array(arr, 4) == 0
+    
+    arr = (ctypes.c_int * 5)(0, 0, 0, 0, 0)
+    assert lib.sum_array(arr, 5) == 0
+
+if __name__ == "__main__":
+    pytest.main() "
+
+Step 4: Run pytest
+    "pytest test_integration.py"
+
+If all test cases are correct, the output of the terminal should be close to this:
+
+    "============================= test session starts ==============================
+platform darwin -- Python 3.x.x, pytest-6.x.x, py-1.x.x, pluggy-0.x.x
+rootdir: /path/to/your/directory
+collected 2 items
+
+test_integration.py ..                                                  [100%]
+
+============================== 2 passed in 0.03s ===============================
+"
