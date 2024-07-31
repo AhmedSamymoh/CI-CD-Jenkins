@@ -1,8 +1,15 @@
 import csv
 
+########### User Configuration #############
+
 # Input and output file paths
 INPUT_FILE = 'jira_all_issues.csv'
 OUTPUT_FILE = 'jira_sprint_issues.txt'
+s
+Sprint_Coloumn = 4 # Sprint Coloumn
+
+############################################
+
 
 def find_highest_sprint(file_path):
     highest_sprint = None
@@ -34,9 +41,10 @@ def filter_issues_by_sprint(file_path, highest_sprint, output_file):
                     if int(row[1].replace("Sprint ","")) == highest_sprint:
                         task_id = row[0]
                         task_title = row[2]
-                        task_description = row[3]
+                        assignee = row[4]
+                        task_description = row[2]
                         # Write task information in the desired format
-                        outfile.write(f"[{task_id}] {task_title} : {task_description}\n\n")
+                        outfile.write(f"[{task_id}] : {task_description}\n\n")
                 except ValueError:
                     continue  # Skip rows with invalid sprint numbers
 
