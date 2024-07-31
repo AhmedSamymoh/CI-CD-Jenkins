@@ -1,4 +1,5 @@
 import csv
+import re
 
 ########### User Configuration #############
 
@@ -6,9 +7,24 @@ import csv
 INPUT_FILE = 'jira_all_issues.csv'
 OUTPUT_FILE = 'jira_sprint_issues.txt'
 
-Sprint_Coloumn = 4 # Sprint Coloumn
+
 
 ############################################
+
+
+
+def get_sprint_number(text):
+    # Define the pattern to match "sprint" followed by a number
+    pattern = r'Sprint\s*(\d+)'
+    # Search for the pattern in the text
+    match = re.search(pattern, text)
+    if match:
+        # Extract the number from the match
+        return int(match.group(1))
+    # If no match is found, return None
+    return 0
+######################################################
+
 
 
 def find_highest_sprint(file_path):
@@ -19,7 +35,7 @@ def find_highest_sprint(file_path):
         for row in reader:
             if len(row) > 1 and row[1].startswith("Sprint "):  # Ensure the column starts with "Sprint "
                 try:
-                    sprint = int(row[1].replace("Sprint ",""))
+                    sprint = get_sprint_number(row[1])
                     print(sprint)
                     if highest_sprint is None or sprint > highest_sprint:
                         highest_sprint = sprint
@@ -38,7 +54,7 @@ def filter_issues_by_sprint(file_path, highest_sprint, output_file):
         for row in reader:
             if len(row) > 1 and row[1].startswith("Sprint "):  # Ensure the column starts with "Sprint "
                 try:
-                    if int(row[1].replace("Sprint ","")) == highest_sprint:
+                    if get_sprint_number(row[1]) == highest_sprint:
                         task_id = row[0]
                         task_title = row[2]
                         assignee = row[4]
