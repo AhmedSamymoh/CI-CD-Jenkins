@@ -4,6 +4,15 @@ import csv
 INPUT_FILE = 'jira_all.csv'
 OUTPUT_FILE = 'jira_sprint_python_issues.txt'
 
+########### User Configuration #############
+
+Sprint_Coloumn = 4 # Sprint Coloumn
+
+############################################
+
+
+
+
 def find_highest_sprint(file_path):
     highest_sprint = None
     with open(file_path, 'r') as file:
@@ -11,7 +20,7 @@ def find_highest_sprint(file_path):
         next(reader)  # Skip header
         for row in reader:
             if row[4]:
-                sprint =  int(row[4].replace("CCB Sprint ",""))  # Sprint is in the 5th column (index 4)
+                sprint =  int(row[4].replace("Sprint ",""))  # Sprint is in the 5th column (index 4)
                 print(sprint)
                 if (highest_sprint is None or sprint > highest_sprint):
                     highest_sprint = sprint
@@ -24,7 +33,7 @@ def filter_issues_by_sprint(file_path, highest_sprint, output_file):
        
         for row in reader:
             if row[4]:
-                if  int(row[4].replace("CCB Sprint ","")) == highest_sprint:  # Sprint is in the 5th column (index 4)
+                if  int(row[4].replace("Sprint ","")) == highest_sprint:  # Sprint is in the 5th column (index 4)
                     print(row)
                     writer.writerow(row)
 
