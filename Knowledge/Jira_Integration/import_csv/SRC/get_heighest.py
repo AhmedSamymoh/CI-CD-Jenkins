@@ -4,6 +4,7 @@ import re
 ########### User Configuration #############
 
 # Input and output file paths
+
 INPUT_FILE = 'jira_all_issues.csv'
 OUTPUT_FILE = 'jira_sprint_issues.txt'
 
