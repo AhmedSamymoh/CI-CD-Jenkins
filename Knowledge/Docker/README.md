@@ -27,3 +27,38 @@ docker run -d \
 --net mongo-network \
 
 ```
+
+----
+# Create your own docker image
+
+- be familier with the `Dockerfile` Syntax
+- check that dummy example [Dockerfile](Dockerfile).
+- be in same directory of Dockerfile
+- run `docker build -t myfirstdockerimg:1.0 .`
+    - as `myfirstdockerimg` image name and `.` is for the current directory
+
+```bash
+C:\Users\ahmed\Desktop>docker run -it b1d8f3226fb9 sh
+/ #
+/ #
+/ #
+/ # ls
+bin    etc    lib    mnt    opt    root   sbin   sys    usr
+dev    home   media  mydir  proc   run    srv    tmp    var
+/ # cd mydir
+/mydir #
+```
+```bash
+/mydir # echo $PATH
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+/mydir # env
+HOSTNAME=8a0c8ac49ce4
+SHLVL=1
+HOME=/root
+OLDPWD=/
+MONGO_DB_USERNAME=admin ####<<<<<<< yup
+TERM=xterm
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+MONGO_DB_PWD=password ####<<<<<<< yup
+PWD=/mydir 
+```
