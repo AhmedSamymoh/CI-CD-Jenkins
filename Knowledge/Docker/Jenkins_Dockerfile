@@ -1,0 +1,78 @@
+# Use the official Jenkins base image
+FROM jenkins/jenkins:lts
+
+# Switch to root user to install tools
+USER root
+ 
+# Set the environment variable to avoid prompts during package installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update the package list and install necessary packages
+RUN apt-get update && \
+    apt-get install -y \
+    openjdk-17-jdk-headless \
+    wget \
+    git \
+    docker.io \
+    python3 \
+    python3-pip \
+    python3-venv \
+    curl \
+    gnupg2 \
+    apt-transport-https \
+    build-essential \
+    cmake \
+    vim \
+    lcov \
+    cppcheck \
+    && apt-get clean
+
+# Install GTest
+RUN git clone https://github.com/google/googletest.git /usr/src/gtest && \
+    cd /usr/src/gtest && \
+    cmake . && \
+    make && \
+    make install && \
+    cd && \
+    rm -rf /usr/src/gtest
+
+# Seting GTEST_HOME environment variable
+ENV GTEST_HOME=/usr/src/gtest
+
+# Create a virtual environment and install Pytest
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install pytest
+
+# Make sure the virtual environment's bin directory is in the PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install Allure Commandline Tool
+RUN wget https://github.com/allure-framework/allure2/releases/download/2.14.0/allure-2.14.0.tgz && \
+    tar -zxvf allure-2.14.0.tgz -C /opt/ && \
+    ln -s /opt/allure-2.14.0/bin/allure /usr/bin/allure
+
+# Include Tini for proper process handling
+RUN curl -fsSL https://github.com/krallin/tini/releases/download/v0.19.0/tini-static -o /sbin/tini && \
+    chmod +x /sbin/tini
+
+# Install Jenkins plugins
+USER jenkins
+RUN jenkins-plugin-cli --plugins "git docker-workflow"
+
+# Switch back to root if additional setup is needed
+USER root
+
+
+# Expose the Jenkins ports
+EXPOSE 8080
+EXPOSE 50000
+
+# Set Jenkins home
+ENV JENKINS_HOME /var/jenkins_home
+
+# Set the entry point to use the Jenkins start script
+ENTRYPOINT ["/sbin/tini", "--", "/usr/local/bin/jenkins.sh"]
+
+# Declare volumes
+VOLUME /var/jenkins_home
+VOLUME /usr/local/bin/additional-tools

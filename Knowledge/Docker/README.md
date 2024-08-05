@@ -1,7 +1,6 @@
 # Docker Commands
 
 ## Docker network example
------
 
 ### Create docker network
 - Creating docker network  mongo-network
@@ -61,4 +60,41 @@ TERM=xterm
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 MONGO_DB_PWD=password ####<<<<<<< yup
 PWD=/mydir 
+```
+- to remove all Docker containers, you can use the following command:
+```batch
+docker rm $(docker ps -a -q)
+```
+
+
+----
+
+
+![alt text](asserts/image-1.png)
+
+![alt text](asserts/image.png)
+
+![je](asserts/MountingJenkinsContainer.png)
+
+---
+
+```bash
+C:\Users\ahmed>docker volume inspect jenkins_home
+[
+    {
+        "CreatedAt": "2024-08-04T03:58:11Z",
+        "Driver": "local",
+        "Labels": null,
+        "Mountpoint": "/var/lib/docker/volumes/jenkins_home/_data",
+        "Name": "jenkins_home",
+        "Options": null,
+        "Scope": "local"
+    }
+]
+```
+
+
+- interactive terminal with root user
+```bash
+docker run -it --rm -p 8085:8080 -p 50000:50000 --user root
 ```
