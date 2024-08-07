@@ -53,7 +53,19 @@ You can do some debugging to check files availabilty and accessability
             }
 
 ## Note its very very important to accuratly place your files in the repo  
-## (Any mistake or conflict will result in errors or no report I can gaurante that after hunderds of modifications)
+
+
+
+## (Any mistake or conflict will result in errors or no report I can gaurante that after hunderds of modifications) 
+
+
+
+![image](https://github.com/user-attachments/assets/3fde7a3f-caa3-4c4a-9681-b9e15ba227a0)
+
+
+
+
+
 
 
 Here is How i did it 
@@ -136,5 +148,12 @@ Allure Report:
 
 
 
+
+--------------------------------------------------------------------------
+
+# References
+
+
+- https://allurereport.org/docs/pytest/
 
 
