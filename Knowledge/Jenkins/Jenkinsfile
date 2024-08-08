@@ -1,0 +1,127 @@
+pipeline {
+    agent any
+    stages {
+        stage('Check for Changes') {
+            steps {
+                script {
+                    // Run git command to get changed files
+                    def changes = bat(script: '\"C:\\Program Files\\Git\\bin\\git.exe\" diff --name-only HEAD~1 HEAD', returnStdout: true).trim()
+                    
+                    // Check if the specific C files are in the list of changed files
+                    env.RUN_SW_UNIT_1 = ( changes.contains('sum.c') || (changes.contains('sumTest.cpp')) ) ? 'true' : 'false'
+                    env.RUN_SW_UNIT_2 = ( changes.contains('mul.c') || (changes.contains('mulTest.cpp')) )? 'true' : 'false'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                echo "Building source code..."
+                bat 'echo From building'
+                bat 'cmake -G "MinGW Makefiles" -B build -DGTest_DIR=$env:GTEST_DIR'
+                bat 'cmake --build build'
+
+                bat """
+                cd CodeCoverage
+                gcc -fprofile-arcs -ftest-coverage -o coverage main.c ../sum.c ../mul.c
+                coverage.exe  
+                """
+                    
+            }
+
+        }
+        
+        stage('SWE4') {
+            parallel {
+                stage('SW Unit 1'){
+                    when {
+                        expression { env.RUN_SW_UNIT_1 == 'true' }
+                    }
+
+                    stages{
+
+
+                        stage('Static Code Analysis of sum.c') {
+                                steps {
+                                    echo "Static Code Analysis running ..."
+                                    bat 'cppcheck --addon="misra.json" --suppress=missingIncludeSystem sum.c > MisraCkOut1.txt 2>&1'
+                                    // bat 'mkdir MisraC_Check' 
+                                    bat 'C:\\Python312\\python.exe MisraC_Check\\CheckMisraC.py C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\Pipeline\\MisraCkOut1.txt'
+                                }
+                        }
+                        stage('Code Coverage sum.c') {
+                            steps {
+                                script {
+                                    bat """
+                                    echo ================================= The result of the coverage is : ===================================================
+                                    cd CodeCoverage
+                                    gcov -b -o . coverage-sum.gcda
+                                    """
+                                }
+                            }
+                        }
+                        
+                        stage('Unit Testing') {
+                            steps {
+                                echo "Running unit tests with Google Test"
+                                bat 'build\\sumTest.exe'
+                            }
+                        }
+                    }
+
+                }
+                stage('SW Unit 2'){
+                    when {
+                        expression { env.RUN_SW_UNIT_2 == 'true' }
+                    }
+                    stages{
+                        stage('Static Code Analysis of mul.c') {
+                            steps {
+                                echo "Static Code Analysis running ..."
+                                bat 'cppcheck --addon="misra.json" --suppress=missingIncludeSystem mul.c > MisraCkOut2.txt 2>&1'
+                                // bat 'mkdir MisraC_Check' 
+                                bat 'C:\\Python312\\python.exe MisraC_Check\\CheckMisraC.py C:\\ProgramData\\Jenkins\\.jenkins\\workspace\\Pipeline\\MisraCkOut2.txt'
+                            }
+                        }
+                        stage('Code Coverage mul.c') {
+                            steps {
+                                script {
+                                    bat """
+                                    echo ================================= The result of the coverage is : ===================================================
+                                    cd CodeCoverage
+                                    gcov -b -o . coverage-mul.gcda
+                                    """
+                                }
+                            }
+                        }
+                        stage('Unit Testing') {
+                            steps {
+                                echo "Running unit tests with Google Test"
+                                bat 'build\\mulTest.exe'
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+        stage('Integration Testing') {
+            steps {
+                bat """
+                    O:
+                    cd O:\\Jenkins\\pytest\\Pytest_
+                    allure serve .\\reportallure\\
+                """
+            }
+        }
+        stage('Jira') {
+            steps {
+                bat """
+                    .\\jira.bat
+                """
+                    
+            }
+
+        }
+    }
+}
+ 
