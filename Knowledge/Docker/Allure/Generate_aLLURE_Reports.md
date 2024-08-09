@@ -60,10 +60,6 @@ You can do some debugging to check files availabilty and accessability
 
 
 
-![image](https://github.com/user-attachments/assets/3fde7a3f-caa3-4c4a-9681-b9e15ba227a0)
-
-
-
 ----------------------------------------------------------------------------------------------
 
 
