@@ -13,15 +13,15 @@ Hello, World.
 
 ```c
 int main(){
-        /*This is a wild Pointer */
-        int *ptr;d
+  /*This is a wild Pointer */
+  int *ptr;d
 
-        int array[10];
+  int array[10];
 
-        /*Out of Range*/
-        array[100] = 30;
+  /*Out of Range*/
+  array[100] = 30;
 
-        printf("Hello, World. \n");
+  printf("Hello, World. \n");
 }
 ```
 
