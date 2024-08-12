@@ -1,0 +1,83 @@
+# This Dockerfile contains the Docker image along with the needed side applications in order for the full pipeline to work properly
+FROM ubuntu:latest
+
+#Installing Docker image 
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+       $(lsb_release -cs) \
+       stable" && \
+    apt-get update && \
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+
+#Installing the essential Tools
+RUN apt-get install -y \
+    software-properties-common \
+    wget \
+    unzip \
+    git \
+    gnupg2 \
+    && rm -rf /var/lib/apt/lists/*
+
+
+#Installing Python3 and pip
+RUN apt-get update && apt-get install -y python3
+RUN apt-get update && apt-get install -y python3-pip
+
+
+#installing Pytest 
+RUN apt update && apt install -y python3-pytest
+
+
+# Install MinGW64
+RUN apt-get update && apt-get install -y \
+    mingw-w64 \
+    && rm -rf /var/lib/apt/lists/*
+
+
+#install CppCheck
+RUN apt-get update && apt-get install -y \
+    cppcheck \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+# Install CMake
+RUN apt-get update && apt-get install -y \
+    cmake \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+# Install Google Test
+RUN apt-get update && apt-get install -y \
+    libgtest-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+# Install JDK-17
+RUN apt-get update && apt-get install -y \
+    openjdk-17-jdk \
+    && rm -rf /var/lib/apt/lists/*
+
+
+
+# Install Allure 2.30
+RUN wget https://github.com/allure-framework/allure2/releases/download/2.30.0/allure-2.30.0.zip && \
+    unzip allure-2.30.0.zip -d /opt && \
+    ln -s /opt/allure-2.30.0/bin/allure /usr/bin/allure && \
+    rm allure-2.30.0.zip
+
+
+# Make the virtual environment available in the PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Set Applications home
+ENV JENKINS_HOME=/var/lib/jenkins
+
+# Start Jenkins using the service command and keep the container running
+CMD ["sh", "-c", "service jenkins start && tail -f /var/log/jenkins/jenkins.log"]
+
