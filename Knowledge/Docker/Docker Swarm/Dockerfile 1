@@ -1,0 +1,46 @@
+# This Dockerfile contains Jenkins and the Docker Image 
+FROM ubuntu:latest
+
+#Installing Docker image 
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates curl gnupg-agent software-properties-common && \
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add - && \
+    add-apt-repository \
+       "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+       $(lsb_release -cs) \
+       stable" && \
+    apt-get update && \
+    apt-get install -y docker-ce docker-ce-cli containerd.io
+
+# Update the package list and install necessary packages
+RUN apt-get update && \
+    apt-get install -y \
+    openjdk-21-jdk \
+    wget \
+    software-properties-common\
+    curl \
+    vim \
+    gnupg2 \
+    apt-transport-https \
+    build-essential \
+    unzip \
+    && apt-get clean
+
+#Installing Jenkins
+RUN curl -fsSL https://pkg.jenkins.io/debian/jenkins.io.key | apt-key add - && \
+sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list' && \
+apt-get update && \
+apt-get install -y jenkins && \
+apt-get clean
+
+# Make the virtual environment available in the PATH
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Set Jenkins home
+ENV JENKINS_HOME=/var/lib/jenkins
+
+# Override the default Jenkins port
+RUN sed -i 's/HTTP_PORT=8080/HTTP_PORT=8086/' /etc/default/jenkins
+
+# Start Jenkins using the service command and keep the container running
+CMD ["sh", "-c", "service jenkins start && tail -f /var/log/jenkins/jenkins.log"]
