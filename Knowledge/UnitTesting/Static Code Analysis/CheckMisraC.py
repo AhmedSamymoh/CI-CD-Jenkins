@@ -3,7 +3,7 @@ import os
 def parse_cppcheck_output(file_path):
     mandatory_errors = []
     optimized_output = []
-    mandatory_keywords = ["Major","Required", "Critical", "Mandatory"]
+    mandatory_keywords = ["Major", "Critical", "Mandatory"]
 
     with open(file_path, 'r') as file:
         lines = file.readlines()
