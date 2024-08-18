@@ -1,0 +1,222 @@
+pipeline {
+    agent { label 'Master' }
+    tools {
+        allure ('allure')
+    }
+
+        stages {
+            stage('Check for Changes') {
+                steps {
+                    script {
+                        echo "Checking for changes..."
+                        //def changes = sh(script: 'git diff --name-only HEAD~1 HEAD', returnStdout: true).trim()
+                        //echo "Changed files: ${changes}"
+                        // Check if the specific C files are in the list of changed files
+                        //env.RUN_SW_UNIT_1 = ( changes.contains('sum.c') || (changes.contains('sumTest.cpp')) ) ? 'true' : 'false'
+                        //env.RUN_SW_UNIT_2 = ( changes.contains('mul.c') || (changes.contains('mulTest.cpp')) )? 'true' : 'false'
+                    }
+                }
+            }
+
+            stage('Build') {
+                steps {
+                    echo "============================================================================================="
+                    echo "Building source code..."
+                    echo "From building the Gtest project"
+                    sh 'cmake CMakeLists.txt'
+                    sh 'make'
+                    echo "============================================================================================="
+                    echo "Creating code coverage..."
+                    sh 'mkdir -p CodeCoverage'
+                    dir('CodeCoverage') {
+                        sh 'gcc -fprofile-arcs -ftest-coverage -o coverage main.c ../mul.c ../sum.c'
+                        sh './coverage'
+                    }
+                    echo "============================================================================================="
+                }
+            }
+            stage('SWE4') {
+                parallel {
+/********************************************************************************************************************************************/
+/********************************************************************************************************************************************/
+                    stage('SW Unit 1'){
+                        // when {
+                        //     expression { env.RUN_SW_UNIT_1 == 'true' }
+                        // }
+
+                        stages{
+                            stage('Static Code Analysis - sum.c') {
+                                steps {
+                                    echo "Running Static Code Analysis..."
+                                    echo "============================================================================================="
+                                    sh 'cppcheck --enable=all sum.c'
+                                    sh '/var/jenkins_home/MisraC/Misra.sh sum.c'
+                                    echo "============================================================================================="
+                                }
+                            }
+                            
+                            stage('Helix QAC.bat script runnning from windows') { 
+                                agent { label 'Windows' }
+                                steps {
+                                    bat """
+                                        cd O:\\Jenkins\\New folder
+                                        a.bat
+                                    """
+
+                                }
+                            }
+
+                            stage('Code Coverage Analysis - sum.c') {
+                                steps {
+                                    echo "============================================================================================="
+                                    echo "Generating code coverage report..."
+                                    dir('CodeCoverage') {
+                                        sh 'gcov -b -o . coverage-main.gcda'
+                                        sh 'gcov -b -o . coverage-sum.gcda'
+                                        sh 'lcov --capture --directory . --output-file coverage.info'
+                                        sh 'genhtml coverage.info --output-directory out'
+                                    }
+                                    echo "============================================================================================="
+                                }
+                            }
+
+                            stage('Unit Testing - sum.c') {
+                                steps {
+                                    echo "============================================================================================="
+                                    echo "Running unit tests with Google Test..."
+                                    sh './sumTest'
+                                    echo "============================================================================================="
+                                }
+                            }
+/********************************************************************************************************************************************/
+                            stage('Allure Report SUT - sum.c') {
+                                steps {
+                                    echo "============================================================================================="
+                                    script {
+                                        // if the test fails, the build will not fail
+                                        def testResult = sh(script: './sumTest --gtest_output=xml:report1.xml', returnStatus: true)
+                                        sh '''
+                                        mkdir -p allure-results
+                                        mv report1.xml allure-results
+                                        '''
+                                    
+                                        
+                                        if (testResult != 0) {
+                                            echo "Some tests failed. Check the Allure report for details."
+                                        }
+                                    }
+                                    echo "============================================================================================="
+                                }
+                            }
+/********************************************************************************************************************************************/
+                        }
+                    }
+                    
+/********************************************************************************************************************************************/
+/********************************************************************************************************************************************/
+                    stage('SW Unit 2'){
+                        // when {
+                        //     expression { env.RUN_SW_UNIT_2 == 'true' }
+                        // }
+
+                        stages{
+                            stage('Static Code Analysis - mul.c') {
+                                steps {
+                                    echo "Running Static Code Analysis..."
+                                    echo "============================================================================================="
+                                    sh 'cppcheck --enable=all mul.c'
+                                    sh '/var/jenkins_home/MisraC/Misra.sh mul.c'
+                                    echo "============================================================================================="
+                                }
+                            }
+/********************************************************************************************************************************************/
+                            stage('Helix QAC.bat script runnning from windows') { 
+                                agent { label 'Windows' }
+                                steps {
+                                    bat """
+                                        cd O:\\Jenkins\\New folder
+                                        a.bat
+                                    """
+
+                                }
+                            }
+/********************************************************************************************************************************************/
+                            stage('Code Coverage Analysis - mul.c') {
+                                steps {
+                                    echo "============================================================================================="
+                                    echo "Generating code coverage report..."
+                                    dir('CodeCoverage') {
+                                        sh 'gcov -b -o . coverage-main.gcda'
+                                        sh 'gcov -b -o . coverage-mul.gcda'
+                                        sh 'lcov --capture --directory . --output-file coverage.info'
+                                        sh 'genhtml coverage.info --output-directory out'
+                                    }
+                                    echo "============================================================================================="
+                                }
+                            }
+/********************************************************************************************************************************************/
+                            stage('Unit Testing - mul.c') {
+                                steps {
+                                    echo "============================================================================================="
+                                    echo "Running unit tests with Google Test..."
+                                    sh './mulTest || true'
+                                    echo "============================================================================================="
+                                }
+                            }
+/********************************************************************************************************************************************/
+                            stage('Allure Report SUT - mul.c') {
+                                steps {
+                                    echo "============================================================================================="
+                                    script {
+                                        // if the test fails, the build will not fail
+                                        def testResult = sh(script: './mulTest --gtest_output=xml:report.xml', returnStatus: true)
+                                        sh '''
+                                        mkdir -p allure-results
+                                        mv report.xml allure-results
+
+                                        '''
+                                        
+                                        if (testResult != 0) {
+                                            echo "Some tests failed. Check the Allure report for details."
+                                        }
+                                    }
+                                    echo "============================================================================================="
+                                }
+                            }
+/********************************************************************************************************************************************/
+                        }
+                    }
+                }
+            }
+            /* Uncomment the following stage if you want to run integration tests */
+            stage('Integration Testing') {
+                steps {
+                    echo "Running bash script for Debbugger script and Dynamic Analysis"
+                    echo "Running batch script for Dynamic Analysis"
+
+                    sh 'allure generate allure-results --clean -o ALLURE_REPORT'
+                    allure includeProperties: true, jdk: '', results: [[path: '/var/jenkins_home/workspace/CI/ALLURE_REPORT']]
+
+                }
+            } 
+
+/********************************************************************************************************************************************/
+            stage('Jira Release Notes') {
+                steps {
+
+                    echo "Generating Jira release notes..."
+                    dir('Jira') {
+                        sh 'apt-get install jq -y'
+                        sh 'chmod 777 ./jira.sh'
+                        sh './jira.sh'
+                        echo "============================================================================================="
+                        echo "Jira Release Notes:"
+                        sh 'cat jira_sprint_issues.txt'
+                        echo "============================================================================================="
+                    }
+                }
+            }
+            
+
+    }
+}
