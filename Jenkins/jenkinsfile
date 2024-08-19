@@ -1,0 +1,157 @@
+/*********************************************
+**********************************************
+* Jenkinsfile for CI Multibranch Pipeline
+* Project: CI_Brightskies
+* Brightskies ©
+**********************************************
+**********************************************/
+
+pipeline {
+    agent { label 'Master' }
+
+    stages {
+        stage('Identify Git Event') {
+            steps {
+                script {
+                    if (env.ghprbPullId) { // Use ghprbPullId for PR number
+                        echo "This is a pull request from branch: ${env.ghprbSourceBranch}"
+                        currentBuild.displayName = "PR-${env.ghprbSourceBranch}-${env.ghprbPullId} - Build #${env.BUILD_NUMBER}"  
+                    } else {
+                        echo "Push Event detected for Build #${env.BUILD_NUMBER}"
+                        currentBuild.displayName = "Push - Build #${env.BUILD_NUMBER}"
+                    }
+                }
+            }
+        }
+        stage('Push Pipeline') {
+            parallel {
+                stage('SWE 4') {
+                    when {
+                        not { expression { env.ghprbPullId } } // Run only for push events
+                    }
+                    stages {
+
+                        /*******************************************************Build Stage***********************************************************/
+                        stage('Build') {
+                            steps {
+                                script {
+                                    if (env.BRANCH_NAME == 'Feature1') {
+                                        /*Developer1*/
+
+                                    } else if (env.BRANCH_NAME == 'Feature2') {
+                                        /*Developer2*/
+
+                                    } else if (env.BRANCH_NAME == 'Feature3') {
+                                        /*Developer3*/
+
+
+                                    }else if(env.BRANCH_NAME == 'main') {
+
+                                        echo "============================================================================================="
+                                        echo "Building source code..."
+                                        echo "From building the Gtest project"
+                                        echo "============================================================================================="
+                                    }else{
+                                        /*Nothing*/
+                                    }
+                                }
+                            }
+                        }
+                        /************************************************ Static Code Analysis Stage*************************************************/
+                        stage('Static Code Analysis') {
+                            steps {
+                                echo "Running Static Code Analysis..."
+                                echo "============================================================================================="
+                                script {
+                                    if (env.BRANCH_NAME == 'Feature1') {
+                                        /*Developer1*/  
+                                        
+                                    } else if (env.BRANCH_NAME == 'Feature2') {
+                                        /*Developer2*/  
+                                        
+                                    } else if (env.BRANCH_NAME == 'Feature3') {
+                                        /*Developer3*/  
+                                        
+
+                                    }else if(env.BRANCH_NAME == 'main') {
+                                        echo "Running Static Code Analysis..."
+
+                                    }else{
+                                        /*Nothing*/
+                                    }
+                                }
+                                echo "============================================================================================="
+                            }
+                        }
+                        /******************************************************************************************************************************/
+                        stage('Agent Helix QAC.bat script') { 
+                            agent { label 'Windows' }
+                            steps {
+                                bat """
+                                    cd O:\\Jenkins\\New folder
+                                    a.bat
+                                """
+                            }
+                        }
+                        /********************************************* Code Coverage Analysis Stage ****************************************************/
+                        stage('Code Coverage Analysis ') {
+                            steps {
+                                echo "============================================================================================="
+                                echo "Generating code coverage report..."
+                                echo "============================================================================================="
+                            }
+                        }
+                        /*************************************************** Unit Testing Stage *******************************************************/
+                        stage('Unit Testing ') {
+                            steps {
+                                echo "============================================================================================="
+                                echo "Running unit tests with Google Test..."
+                                echo "============================================================================================="
+                            }
+                        }
+                        /******************************************************************************************************************************/   
+                        stage('Allure Report SUT') {
+                            steps {
+                                echo "============================================================================================="
+
+                                echo "============================================================================================="
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage('Pull Request Pipeline') {
+            parallel {
+                stage('SWE 5') {
+                    when {
+                        expression { env.ghprbPullId } // Run only for pull request events
+                    }
+                    stages {
+                        stage('Checkout PR') {
+                            steps {
+                                echo 'Checking out the PR branch...'
+                                // Add your checkout or PR-specific steps here
+                            }
+                        }
+                        stage('Integration Tests') {
+                            steps {
+                                echo 'Running Code Inspection tests...'
+                                // Add your test steps here
+                            }
+                        }
+                        stage('Jira Release Notes') {
+                            steps {
+
+                                echo "Generating Jira release notes..."
+                            }
+                        } 
+                    }
+                }
+            }
+        }
+    }
+}
+  
+
+
