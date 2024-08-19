@@ -1,0 +1,17 @@
+version: '3'
+services:
+  jenkins:
+    image: brightskies_ci_jenkins:latest
+    ports:
+      - "8083:8080"   # Map Jenkins web interface
+      - "50000:50000" # Map Jenkins agent port
+      - "2222:22"     # Map SSH port
+    volumes:
+      - C:/jenkins_home:/var/jenkins_home
+    networks:
+      - my_network
+    # Optionally, set environment variables or additional configuration here
+
+networks:
+  my_network:
+    driver: bridge
