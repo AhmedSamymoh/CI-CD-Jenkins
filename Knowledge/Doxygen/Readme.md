@@ -1,5 +1,5 @@
 # Setup Doxygen
-**If you're on Windows**, You have to install both (Doxygen)[http://www.doxygen.nl/download.html] and (Graphviz)[http://www.graphviz.org/Download..php] , or 
+**If you're on Windows**, You have to install both [Doxygen](http://www.doxygen.nl/download.html) and [Graphviz](http://www.graphviz.org/Download..php) , or 
 **if you're on Linux** and have used `apt-get install doxygen graphviz`
 ---
 #### Make sure to :
