@@ -2,7 +2,7 @@
 # CI-CD-Jenkins
 
 <div>
-  <img src="Knowledge/Docker/Brightskies_ci_jenkins%20Image/asserts/p.png" alt="Pin Diagram" width="600">
+  <img src="Knowledge/Docker/Brightskies_ci_jenkins%20Image/asserts/p.png" alt="project details" width="600">
 </div>
 
 ### Table of Contents
