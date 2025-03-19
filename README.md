@@ -36,11 +36,193 @@
     - **[Reporting](Knowledge/Reporting/):** Reporting tools and setups
       - **[Allure](Knowledge/Reporting/Allure/):** Allure setup and usage
     - **[Unit Testing](Knowledge/UnitTesting/):** Unit testing strategies and examples
-      - **[Assert Example](Knowledge/UnitTesting/Assert_Example/):** Examples of assertions in tests
       - **[Code Coverage](Knowledge/UnitTesting/Code%20Coverage/):** Code coverage configurations and tools
-      - **[Error Check](Knowledge/UnitTesting/ERROR_CHK/):** Error checking strategies in unit tests
       - **[GTest](Knowledge/UnitTesting/Gtest/):** GTest configurations and usage
-        - **[Example](Knowledge/UnitTesting/Gtest/Example/):** Example test cases
       - **[Static Code Analysis](Knowledge/UnitTesting/Static%20Code%20Analysis/):** Static code analysis configurations
-      - **[Testing Source](Knowledge/UnitTesting/Testing_src/):** Source files for testing
-  
+
+
+------
+
+# Project Setup Guide 🛸
+
+This guide will walk you through setting up the project locally using Docker and Jenkins. The setup includes volume mapping to ensure data persistence and cloning the repository into the Jenkins home directory. Additionally, we'll cover how to install necessary plugins and tools in Jenkins.
+
+---
+
+## Prerequisites
+
+1. **Docker Desktop**:
+   - Download and install Docker Desktop from [https://www.docker.com/](https://www.docker.com/).
+   - After installation, sign in to Docker Desktop and ensure it is running.
+
+2. **Git** installed on your system.
+
+---
+
+
+## Step 1: Clone the Repository
+
+First, clone the repository to your local machine:
+
+```bash
+git clone https://github.com/AhmedSamymoh/CI-CD-Jenkins.git
+cd CI-CD-Jenkins
+```
+
+
+## Step 2: Build the Docker Image
+
+To build the Jenkins Docker image, run the following command:
+
+
+```bat
+cd '.\Docker Image\'
+```
+
+```bash
+docker build -t Brightskies_CI_Jenkins .
+```
+
+## Step 3: Start Jenkins with Docker Compose
+Start the Jenkins container using Docker Compose:
+
+```bash
+mkdir C:/Jenkin_Workspace
+```
+```bash
+docker-compose up
+```
+
+- the docker compose will:
+  - Start the Jenkins container.
+  - Mount the host directory `C:/Jenkin_Workspace` to `/jenkins_home` in the container for persistent storage.
+  - Map port `8082` on your host to port `8080` in the container (Jenkins UI).
+  - Map port `50000` for Jenkins agent communication.
+
+## Step 4: Docker Volume Mapping
+-The `docker-compose.yml` file defines the following volume mapping:
+
+```yml
+Copy
+version: '3.8'
+
+services:
+  jenkins:
+    image: Brightskies_CI_Jenkins
+    ports:
+      - "8082:8080"
+      - "50000:50000"
+    volumes:
+      - C:/Jenkin_Workspace:/jenkins_home
+```
+
+### Explanation:
+- Volume Mapping: The C:/Jenkin_Workspace directory on your host is mapped to /jenkins_home in the container. This ensures that all Jenkins data (jobs, configurations, plugins, etc.) is stored persistently on your host machine.
+
+### Benefits:
+- Data Persistence: Jenkins data will persist even if the container is stopped or restarted.
+- Easy Access: You can directly access Jenkins data from your host machine.
+
+## Step 5: Cloning the Repository in Jenkins Home
+
+- To make the repository accessible to Jenkins, clone it into the `C:/Jenkin_Workspace` directory:
+
+
+```bash
+cd C:/Jenkin_Workspace
+git clone https://github.com/AhmedSamymoh/CI-CD-Jenkins.git
+```
+
+- This ensures that Jenkins can access the repository for builds and pipelines.
+----
+## Step 6: Access Jenkins and Install Plugins
+
+- Access Jenkins:
+  - Open your browser and navigate to :
+```
+http://localhost:8082
+```
+
+  - Unlock Jenkins using the initial admin password. 
+  - You can find this `password `in the Jenkins logs or at `C:/Jenkin_Workspace/secrets/initialAdminPassword.`
+
+- Install Plugins:
+
+After unlocking Jenkins, you will be prompted to install plugins. Install the following recommended plugins:
+
+- **Git Plugin** – Integrates Jenkins with Git repositories.
+- **GitLab Plugin** – Required if using GitLab for version control and CI/CD.
+- **Allure Jenkins Plugin** – Generates Allure Test Reports for test automation.
+- **GitHub Pull Request Builder Plugin** – Triggers builds for pull requests from GitHub.
+
+### Installation:
+After unlocking Jenkins, navigate to:
+- **Manage Jenkins** → **Plugins Manager** → **Available Plugins**
+- Search for the plugins and install them.
+
+
+- Configure Tools:
+
+  - Go to Manage Jenkins > Global Tool Configuration.
+
+  - Configure tools like Git, Docker, and any other dependencies required for your project.
+
+----
+
+## Step 7: Verify Jenkins Setup
+
+- Once Jenkins is up and running, verify the setup by:
+
+- Creating a new Jenkins job or pipeline.
+
+- Configuring the job to use the cloned repository.
+
+- Running a build to ensure everything is working correctly.
+
+- Using Jenkins Pipelines, create a Jenkinsfile in your repository. Here’s an example:
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Building the project...'
+            }
+        }
+        stage('UnitTesting') {
+            steps {
+                echo 'Running tests...'
+            }
+        }
+        stage('Sprint Release Notes') {
+            steps {
+                echo 'Sprint Release Notes...'
+            }
+        }
+    }
+}
+```
+
+
+This pipeline defines three stages: Build, Test, and Deploy. Customize it according to your project requirements.
+
+
+## Step 8: Configure Jenkins Credentials
+
+To securely interact with private repositories, Docker Hub, or other services, configure credentials in Jenkins.
+
+### Adding GitHub Credentials:
+1. Go to **Manage Jenkins** → **Manage Credentials**.
+2. Select **(global)** under **Stores scoped to Jenkins**.
+3. Click **Add Credentials** → Select **Username with password** or **SSH Key**.
+4. Enter your GitHub username and personal access token.
+5. Save the credentials.
+
+### Adding Docker Hub Credentials:
+1. Navigate to **Manage Jenkins** → **Manage Credentials**.
+2. Click **Add Credentials** → Select **Username with password**.
+3. Enter your Docker Hub username and password.
+4. Save the credentials.
+
+----
