@@ -213,6 +213,13 @@ JIRA_USER="your_email"
 JIRA_API_TOKEN="your_token"  
 JIRA_URL="your_jira_url"  
 ```
+   
+### CppCheck MisraC Static Analysis
+- Making `Misra_src_check.sh` executable
+``` bash
+cd /var/jenkins_home/CI-CD-Jenkins/Static_Code_Analysis
+chmod 777 Misra_src_check.sh
+```
 
 ### Ngrok & GitHub Webhooks  
 - **Update `webhook.py`** , Visit [`Ngrok README.md`](./Ngrok/README.md) ⚙️
