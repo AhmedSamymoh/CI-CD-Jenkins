@@ -59,8 +59,8 @@ RUN curl -s https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
 ######################################################
 
 # Add the .devcontainer directory and devcontainer.json file
-RUN mkdir -p /var/jenkins_home/.devcontainer
-COPY devcontainer.json /var/jenkins_home/.devcontainer/devcontainer.json
+# RUN mkdir -p /var/jenkins_home/.devcontainer
+# COPY devcontainer.json /var/jenkins_home/.devcontainer/devcontainer.json
 
 # Install Visual Studio Code server
 RUN curl -fsSL https://code-server.dev/install.sh | sh

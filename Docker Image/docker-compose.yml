@@ -7,7 +7,7 @@ services:
       - "50000:50000" # Map Jenkins agent port
       - "2222:22"     # Map SSH port
     volumes:
-      - C:/jenkins_home:/var/jenkins_home
+      - C:/Jenkin_Workspace:/var/jenkins_home
     networks:
       - my_network
     # Optionally, set environment variables or additional configuration here

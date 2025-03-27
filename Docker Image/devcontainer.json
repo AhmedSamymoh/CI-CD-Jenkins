@@ -1,0 +1,15 @@
+// devcontainer.json
+{
+    "name": "Jenkins CI Environment",
+    "image": "brightskies_ci_jenkins",
+    "runArgs": ["--init"],
+    "workspaceFolder": "/workspace",
+    "customizations": {
+      "vscode": {
+        "settings": {
+          "terminal.integrated.shell.linux": "/bin/bash"
+        }
+      }
+    }
+  }
+  

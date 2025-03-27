@@ -7,7 +7,7 @@
 - To build the Jenkins Docker image, run the following command:
 
 ```bash
-docker build -t Brightskies_CI_Jenkins .
+docker build -t brightskies_ci_jenkins:latest .
 ```
 
 ### Step 2: Start Jenkins with Docker Compose
