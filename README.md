@@ -123,17 +123,8 @@ services:
 - Data Persistence: Jenkins data will persist even if the container is stopped or restarted.
 - Easy Access: You can directly access Jenkins data from your host machine.
 
-## Step 5: Cloning the Repository in Jenkins Home
 
-- To make the repository accessible to Jenkins, clone it into the `C:/Jenkin_Workspace` directory:
-
-
-```bash
-cd C:/Jenkin_Workspace
-git clone https://github.com/AhmedSamymoh/CI-CD-Jenkins.git
-```
-
-## Step 6: Access Jenkins and Install Plugins
+## Step 5: Access Jenkins and Install Plugins
 
 - Access Jenkins:
   - Open your browser and navigate to:
@@ -186,7 +177,58 @@ After unlocking Jenkins, navigate to:
 
 ----
 
-## Step 7: Verify Jenkins Setup
+## Step 6: Cloning the Repository in Jenkins Home
+
+Clone the repository into `C:/Jenkin_Workspace` (host) or `/var/jenkins_home` (container):
+
+```bat
+# Inside Jenkins Container
+docker ps  # Get container ID or name
+docker exec -it <container_id_or_name> bash
+```
+
+```bash
+cd /var/jenkins_home
+git clone https://github.com/AhmedSamymoh/CI-CD-Jenkins.git
+```
+
+```sh
+cd /var/jenkins_home/CI-CD-Jenkins
+ls
+```
+- Expected output:
+```
+root@bf366f7f9989:/var/jenkins_home/CI-CD-Jenkins# ls
+'Docker Image'   Jenkins   Jira   Knowledge   LICENSE   Ngrok   README.md   Static_Code_Analysis
+```
+
+
+## Step 7: Configuration of Jira and Ngrok scripts
+   
+### Jira Sprint Issues Extractor
+- Edit jira.sh , Visit [`Jira README.md`](./Jira/README.md)
+
+```bash
+JIRA_USER="your_email"  
+JIRA_API_TOKEN="your_token"  
+JIRA_URL="your_jira_url"  
+```
+
+### Ngrok & GitHub Webhooks  
+- **Update `webhook.py`** , Visit [`Ngrok README.md`](./Ngrok/README.md)
+
+```
+cd /var/jenkins_home/CI-CD-Jenkins/Ngrok
+vim webhook.py
+```
+
+```python
+REPO_OWNER = "YourUserName"  
+REPO_NAME = "Repo"  
+GITHUB_TOKEN = "*******Token*******"  
+```
+
+## Step 8: Verify Jenkins Setup
 
 - Once Jenkins is up and running, verify the setup by:
 
