@@ -70,7 +70,7 @@ cd CI-CD-Jenkins
 ```
 
 
-## Step 2: Build the Docker Image
+## Step 2: Build the Docker Image 🐋
 
 To build the Jenkins Docker image, run the following command:
 
@@ -206,7 +206,7 @@ root@bf366f7f9989:/var/jenkins_home/CI-CD-Jenkins# ls
 ## Step 7: Configuration of Jira and Ngrok scripts
    
 ### Jira Sprint Issues Extractor
-- Edit jira.sh , Visit [`Jira README.md`](./Jira/README.md)
+- Edit jira.sh , Visit [`Jira README.md`](./Jira/README.md) ⚙️
 
 ```bash
 JIRA_USER="your_email"  
@@ -215,7 +215,7 @@ JIRA_URL="your_jira_url"
 ```
 
 ### Ngrok & GitHub Webhooks  
-- **Update `webhook.py`** , Visit [`Ngrok README.md`](./Ngrok/README.md)
+- **Update `webhook.py`** , Visit [`Ngrok README.md`](./Ngrok/README.md) ⚙️
 
 ```
 cd /var/jenkins_home/CI-CD-Jenkins/Ngrok
