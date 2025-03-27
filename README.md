@@ -108,7 +108,7 @@ version: '3.8'
 
 services:
   jenkins:
-    image: Brightskies_CI_Jenkins
+    image: brightskies_ci_jenkins
     ports:
       - "8082:8080"
       - "50000:50000"
@@ -133,20 +133,35 @@ cd C:/Jenkin_Workspace
 git clone https://github.com/AhmedSamymoh/CI-CD-Jenkins.git
 ```
 
-- This ensures that Jenkins can access the repository for builds and pipelines.
-----
 ## Step 6: Access Jenkins and Install Plugins
 
 - Access Jenkins:
-  - Open your browser and navigate to :
-```
-http://localhost:8082
-```
+  - Open your browser and navigate to:
+  
+    ```
+    http://localhost:8082
+    ```
+  
+  - Unlock Jenkins using the initial admin password.  
+  - You can find this `password` in the Jenkins logs or at:
+  
+    ```
+    C:/Jenkin_Workspace/secrets/initialAdminPassword
+    ```
 
-  - Unlock Jenkins using the initial admin password. 
-  - You can find this `password `in the Jenkins logs or at `C:/Jenkin_Workspace/secrets/initialAdminPassword.`
+- Add Jenkins Credentials:
+  - Navigate to **Manage Jenkins** → **Manage Credentials**.
+  - Under **Stores scoped to Jenkins**, click on **Global credentials**.
+  - Click **Add Credentials** and enter:
+    - **Kind**: Username with password
+    - **Scope**: Global (Recommended)
+    - **Username**: `<your-username>`
+    - **Password**: `<your-password>`
+    - **ID**: `git-credentials`
+    - **Description**: `Git authentication for Jenkins`
+  - Save the credentials.
 
-- Install Plugins:
+### Install Plugins:
 
 After unlocking Jenkins, you will be prompted to install plugins. Install the following recommended plugins:
 
@@ -154,6 +169,8 @@ After unlocking Jenkins, you will be prompted to install plugins. Install the fo
 - **GitLab Plugin** – Required if using GitLab for version control and CI/CD.
 - **Allure Jenkins Plugin** – Generates Allure Test Reports for test automation.
 - **GitHub Pull Request Builder Plugin** – Triggers builds for pull requests from GitHub.
+
+
 
 ### Installation:
 After unlocking Jenkins, navigate to:
@@ -224,5 +241,9 @@ To securely interact with private repositories, Docker Hub, or other services, c
 2. Click **Add Credentials** → Select **Username with password**.
 3. Enter your Docker Hub username and password.
 4. Save the credentials.
+
+
+## Step 9:
+
 
 ----
