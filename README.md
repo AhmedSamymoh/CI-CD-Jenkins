@@ -80,7 +80,7 @@ cd '.\Docker Image\'
 ```
 
 ```bash
-docker build -t Brightskies_CI_Jenkins .
+docker build -t brightskies_ci_jenkins:latest .
 ```
 
 ## Step 3: Start Jenkins with Docker Compose
